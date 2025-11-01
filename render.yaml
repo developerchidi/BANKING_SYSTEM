@@ -3,6 +3,7 @@ services:
     name: banking-backend
     runtime: node
     plan: starter
+    rootDir: backend
     buildCommand: npm install && npx prisma generate && npm run build
     startCommand: npm run db:deploy && npm start
     envVars:
