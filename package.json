@@ -1,0 +1,57 @@
+{
+  "name": "banking-system",
+  "version": "1.0.0",
+  "description": "Enterprise Banking System with Web and Mobile Applications",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "web-app",
+    "mobile-app",
+    "shared"
+  ],
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:web": "cd web-app && npm run dev",
+    "dev:mobile": "cd mobile-app && npx expo start",
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:web\"",
+    "build:backend": "cd backend && npm run build",
+    "build:web": "cd web-app && npm run build",
+    "build:mobile": "cd mobile-app && npx expo build",
+    
+    "install:all": "npm install && npm install --workspaces",
+    "clean": "rimraf node_modules */node_modules",
+    "setup": "npm run install:all && npm run setup:backend && npm run setup:web && npm run setup:mobile",
+    "setup:backend": "cd backend && npm run setup",
+    "setup:web": "cd web-app && npm run setup",
+    "setup:mobile": "cd mobile-app && npm run setup"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
+    "prisma": "^6.11.1",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "banking",
+    "fintech",
+    "nodejs",
+    "react",
+    "react-native",
+    "typescript",
+    "sql-server",
+    "mongodb"
+  ],
+  "author": "Banking System Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "multer": "^2.0.1",
+    "tesseract.js": "^6.0.1"
+  }
+}

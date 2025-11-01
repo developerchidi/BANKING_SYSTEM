@@ -1,0 +1,98 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production builds
+build/
+dist/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# Logs
+logs/
+*.log
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# React Native
+mobile-app/.expo/
+mobile-app/expo-env.d.ts
+mobile-app/web-build/
+
+# Android
+mobile-app/android/app/build/
+mobile-app/android/.gradle/
+mobile-app/android/local.properties
+
+# iOS
+mobile-app/ios/build/
+mobile-app/ios/Pods/
+mobile-app/ios/*.xcworkspace/xcuserdata/
+
+# Web App
+web-app/build/
+web-app/.next/
+
+# Backend
+backend/uploads/
+backend/temp/
+
+# Testing
+test-results/
+coverage/
+
+# Documentation
+docs/build/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Security
+*.pem
+*.key
+*.crt
+secrets/ 
