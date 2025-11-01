@@ -1,22 +1,41 @@
-# Dependencies
+# Ignore everything
+*
+
+# But don't ignore these folders
+!backend/
+!banking_admin/
+!banking_flutter/
+
+# Don't ignore files inside these folders (use recursive un-ignore)
+!backend/**
+!banking_admin/**
+!banking_flutter/**
+
+# But ignore .git in banking_flutter (if it's a submodule)
+banking_flutter/.git/
+
+# Ignore common files in all allowed folders
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+.pnpm-debug.log*
 
-# Production builds
+# Build outputs
 build/
 dist/
 out/
+*.build/
 
-# Environment variables
+# Environment files
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Database
+# Database files
 *.db
 *.sqlite
 *.sqlite3
@@ -27,20 +46,7 @@ logs/
 *.log
 lerna-debug.log*
 
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output/
-
-# IDEs and editors
+# IDE and editor files
 .vscode/
 .idea/
 *.swp
@@ -56,36 +62,6 @@ coverage/
 ehthumbs.db
 Thumbs.db
 
-# React Native
-mobile-app/.expo/
-mobile-app/expo-env.d.ts
-mobile-app/web-build/
-
-# Android
-mobile-app/android/app/build/
-mobile-app/android/.gradle/
-mobile-app/android/local.properties
-
-# iOS
-mobile-app/ios/build/
-mobile-app/ios/Pods/
-mobile-app/ios/*.xcworkspace/xcuserdata/
-
-# Web App
-web-app/build/
-web-app/.next/
-
-# Backend
-backend/uploads/
-backend/temp/
-
-# Testing
-test-results/
-coverage/
-
-# Documentation
-docs/build/
-
 # Temporary files
 *.tmp
 *.temp
@@ -95,4 +71,11 @@ docs/build/
 *.pem
 *.key
 *.crt
-secrets/ 
+secrets/
+
+# Flutter specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+*.iml
