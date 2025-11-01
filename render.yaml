@@ -2,7 +2,7 @@ services:
   - type: web
     name: banking-backend
     runtime: node
-    plan: starter
+    plan: free
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npm run build
     startCommand: npm run db:deploy && npm start
@@ -48,7 +48,7 @@ services:
 
 databases:
   - name: banking-db
-    plan: starter
+    plan: free
     databaseName: banking_system
     user: banking_user
 
