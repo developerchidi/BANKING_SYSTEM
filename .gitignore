@@ -7,6 +7,7 @@
 !banking_flutter/
 !.gitignore
 !README.md
+!LICENSE
 
 # Don't ignore files inside these folders (use recursive un-ignore)
 !backend/**
