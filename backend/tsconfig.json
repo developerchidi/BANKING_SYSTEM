@@ -8,6 +8,7 @@
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "types": ["node", "multer"],
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,

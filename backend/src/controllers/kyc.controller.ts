@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import multer, { File } from 'multer';
+import multer from 'multer';
 import { KYCService } from '../services/kyc.service';
 
 export class KycController {
@@ -16,7 +16,7 @@ export class KycController {
   static async submit(req: any, res: any) {
     try {
       const { documentType, extractedData } = req.body;
-      const files = req.files as { [fieldname: string]: File[] } | undefined;
+      const files = req.files as { [fieldname: string]: { buffer: Buffer; [key: string]: any }[] } | undefined;
       const userId = (req as any).user.id;
 
       const existingKYC = await KYCService.getKYCRequestsByUserId(userId);
