@@ -16,7 +16,7 @@ export class KycController {
   static async submit(req: any, res: any) {
     try {
       const { documentType, extractedData } = req.body;
-      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
       const userId = (req as any).user.id;
 
       const existingKYC = await KYCService.getKYCRequestsByUserId(userId);

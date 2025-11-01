@@ -68,10 +68,10 @@ export const UserController = {
                 ...(school !== undefined && { school }),
               },
               create: {
-                dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
-                studentId: studentId || null,
-                cohort: cohort || null,
-                school: school || null,
+                ...(dateOfBirth && { dateOfBirth: new Date(dateOfBirth) }),
+                ...(studentId && { studentId }),
+                ...(cohort && { cohort }),
+                ...(school && { school }),
               }
             }
           } : undefined,

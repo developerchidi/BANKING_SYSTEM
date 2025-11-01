@@ -1,4 +1,8 @@
-// API Versioning Strategy
+// API Versioning Strategy - DEPRECATED: This file is not currently used
+// Routes are registered directly in server.ts
+// Keeping this file for potential future use
+
+/*
 const API_VERSION = 'v1';
 
 // Versioned routes
@@ -10,3 +14,4 @@ app.use(`/api/${API_VERSION}/admin`, adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/banking', bankingRoutes);
 app.use('/api/admin', adminRoutes);
+*/
