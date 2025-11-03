@@ -52,7 +52,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen>
     {
       'question': 'Tài khoản bị khóa phải làm sao?',
       'answer':
-          'Nếu tài khoản bị khóa:\n\n1. Kiểm tra email thông báo\n2. Liên hệ hotline: 1900-xxxx\n3. Đến chi nhánh gần nhất\n4. Cung cấp giấy tờ tùy thân',
+          'Nếu tài khoản bị khóa:\n\n1. Kiểm tra email thông báo\n2. Liên hệ hotline: 0352641606\n3. Đến chi nhánh gần nhất\n4. Cung cấp giấy tờ tùy thân',
       'category': 'Tài khoản',
     },
     {
@@ -64,7 +64,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen>
     {
       'question': 'Thẻ bị mất hoặc bị đánh cắp phải làm gì?',
       'answer':
-          'Khi thẻ bị mất hoặc đánh cắp:\n\n1. Gọi ngay hotline: 1900-xxxx\n2. Báo khóa thẻ ngay lập tức\n3. Đến chi nhánh làm thẻ mới\n4. Cập nhật thông tin bảo mật',
+          'Khi thẻ bị mất hoặc đánh cắp:\n\n1. Gọi ngay hotline: 0352641606\n2. Báo khóa thẻ ngay lập tức\n3. Đến chi nhánh làm thẻ mới\n4. Cập nhật thông tin bảo mật',
       'category': 'Bảo mật',
     },
     {
@@ -556,18 +556,19 @@ class _HelpCenterScreenState extends State<HelpCenterScreen>
           // Contact methods
           _buildContactCard(
             title: 'Hotline hỗ trợ',
-            subtitle: '1900-xxxx (24/7)',
+            subtitle: '0352641606 (24/7)',
             icon: Icons.phone_outlined,
             color: const Color(0xFF10B981),
-            onTap: () => _showContactDialog('Hotline', '1900-xxxx'),
+            onTap: () => _showContactDialog('Hotline', '0352641606'),
           ),
           const SizedBox(height: 12),
           _buildContactCard(
             title: 'Email hỗ trợ',
-            subtitle: 'support@banking.com',
+            subtitle: 'nguyenchidi.dev@gmail.com',
             icon: Icons.email_outlined,
             color: const Color(0xFF3B82F6),
-            onTap: () => _showContactDialog('Email', 'support@banking.com'),
+            onTap: () =>
+                _showContactDialog('Email', 'nguyenchidi.dev@gmail.com'),
           ),
           const SizedBox(height: 12),
           _buildContactCard(

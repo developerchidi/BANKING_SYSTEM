@@ -14,7 +14,7 @@ import '../../models/account.dart';
 import '../../models/transaction.dart';
 import '../../theme/theme_provider.dart';
 import '../transfer/transfer_type_screen.dart';
-import '../transaction/transaction_history_screen.dart';
+import '../transaction/transactions_screen.dart';
 import '../transaction/transaction_detail_screen.dart';
 import '../qr/account_qr_screen.dart';
 import '../notification/notification_list_screen.dart';
@@ -924,7 +924,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                 () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const TransactionHistoryScreen(),
+                    builder: (context) => const TransactionsScreen(),
                   ),
                 ),
                 requiresKyc: false, // Lịch sử không cần KYC

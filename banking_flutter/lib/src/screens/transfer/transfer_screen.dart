@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../../services/banking_service.dart';
 import '../../services/http_client.dart';
 import '../../services/auth_service.dart';
@@ -52,6 +55,7 @@ class _TransferScreenState extends State<TransferScreen>
   final _noteCtrl = TextEditingController();
   final _toAccountCtrl = TextEditingController();
   final _toNameCtrl = TextEditingController();
+  final _toAccountFocusNode = FocusNode();
 
   // State
   bool _submitting = false;
@@ -83,6 +87,15 @@ class _TransferScreenState extends State<TransferScreen>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
+    // Lắng nghe khi focus ra khỏi ô số tài khoản
+    _toAccountFocusNode.addListener(() {
+      if (!_toAccountFocusNode.hasFocus) {
+        // Khi mất focus, kiểm tra và tìm kiếm nếu có đủ dữ liệu
+        if (_toAccountCtrl.text.isNotEmpty && _toAccountCtrl.text.length >= 8) {
+          _fetchRecipientInfo(_toAccountCtrl.text);
+        }
+      }
+    });
     _loadData();
   }
 
@@ -93,6 +106,7 @@ class _TransferScreenState extends State<TransferScreen>
     _noteCtrl.dispose();
     _toAccountCtrl.dispose();
     _toNameCtrl.dispose();
+    _toAccountFocusNode.dispose();
     super.dispose();
   }
 
@@ -124,7 +138,7 @@ class _TransferScreenState extends State<TransferScreen>
           _from = accounts.first;
         }
 
-        // Set recipient data and auto-fill note
+        // Set recipient data
         if (widget.initialTo != null) {
           print('🔍 Transfer Screen: Setting initialTo data:');
           print(
@@ -140,18 +154,15 @@ class _TransferScreenState extends State<TransferScreen>
           _toNameCtrl.text = widget.initialTo!.name;
           _verifiedAccountName = widget.initialTo!.name; // Set verified name
 
-          // Tự động điền nội dung chuyển khoản: "<Tên người gửi> chuyển khoản"
-          if (_from != null) {
-            final senderName = _from!.accountName;
-            _noteCtrl.text = '$senderName chuyển khoản';
-            print('🔍 Transfer Screen: Auto-filled note: ${_noteCtrl.text}');
-          }
-
           print(
             '🔍 Transfer Screen: Set _verifiedAccountName: $_verifiedAccountName',
           );
         }
       });
+
+      // Tự động điền nội dung giao dịch: "<TÊN USER KHÔNG DẤU IN HOA> chuyen khoan"
+      await _autoFillTransactionContent();
+
       _animationController.forward();
     } catch (e) {
       setState(() {
@@ -442,7 +453,7 @@ class _TransferScreenState extends State<TransferScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withValues(alpha: 0.5),
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -460,7 +471,7 @@ class _TransferScreenState extends State<TransferScreen>
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 20,
                   offset: const Offset(0, 5),
                 ),
@@ -477,7 +488,7 @@ class _TransferScreenState extends State<TransferScreen>
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF3B82F6).withOpacity(0.1),
+                          color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(
@@ -814,41 +825,156 @@ class _TransferScreenState extends State<TransferScreen>
         );
   }
 
-  InputDecoration _inputDecoration(String label) {
+  // Xóa dấu tiếng Việt
+  String _removeVietnameseDiacritics(String text) {
+    const vietnamese =
+        'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ';
+    const english =
+        'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiioooooooooooooooouuuuuuuuuuuyyyyyd';
+
+    String result = text.toLowerCase();
+    final minLength = vietnamese.length < english.length
+        ? vietnamese.length
+        : english.length;
+
+    for (int i = 0; i < minLength; i++) {
+      try {
+        final vietChar = vietnamese[i];
+        final engChar = english[i];
+        result = result.replaceAll(vietChar, engChar);
+      } catch (e) {
+        // Skip this character if there's an error
+        continue;
+      }
+    }
+    return result;
+  }
+
+  // Lấy tên user và tự động điền nội dung giao dịch
+  Future<void> _autoFillTransactionContent() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+
+      if (userJson != null && userJson.isNotEmpty) {
+        try {
+          dynamic userData;
+          // Try to parse as JSON first
+          try {
+            userData = jsonDecode(userJson);
+          } catch (jsonError) {
+            // If JSON parsing fails, try to extract from string format
+            print('⚠️ JSON parsing failed, trying string format: $jsonError');
+            final firstNameMatch = RegExp(
+              r'firstName[:\s]+([^,}]+)',
+            ).firstMatch(userJson);
+            final lastNameMatch = RegExp(
+              r'lastName[:\s]+([^,}]+)',
+            ).firstMatch(userJson);
+            final emailMatch = RegExp(
+              r'email[:\s]+([^,}]+)',
+            ).firstMatch(userJson);
+
+            userData = {
+              'firstName': firstNameMatch?.group(1)?.trim() ?? '',
+              'lastName': lastNameMatch?.group(1)?.trim() ?? '',
+              'email': emailMatch?.group(1)?.trim() ?? '',
+            };
+          }
+
+          final firstName = (userData['firstName'] ?? '').toString().trim();
+          final lastName = (userData['lastName'] ?? '').toString().trim();
+
+          String fullName = '';
+          if (firstName.isNotEmpty || lastName.isNotEmpty) {
+            fullName = '$firstName $lastName'.trim();
+          } else {
+            // Fallback to email prefix if no name
+            final email = (userData['email'] ?? '').toString().trim();
+            if (email.isNotEmpty) {
+              fullName = email.split('@').first;
+            }
+          }
+
+          if (fullName.isNotEmpty) {
+            try {
+              // Xóa dấu và chuyển thành chữ hoa
+              final nameWithoutDiacritics = _removeVietnameseDiacritics(
+                fullName,
+              );
+              final nameUpperCase = nameWithoutDiacritics.toUpperCase();
+
+              // Tự động điền nội dung giao dịch
+              if (mounted) {
+                _noteCtrl.text = '$nameUpperCase chuyen khoan';
+                print('✅ Auto-filled transaction content: ${_noteCtrl.text}');
+              }
+            } catch (diacriticsError) {
+              print('❌ Error removing diacritics: $diacriticsError');
+              // Fallback: just use uppercase without removing diacritics
+              if (mounted) {
+                _noteCtrl.text = '${fullName.toUpperCase()} chuyen khoan';
+              }
+            }
+          }
+        } catch (e) {
+          print('❌ Error parsing user data: $e');
+        }
+      }
+    } catch (e) {
+      print('❌ Error loading user data: $e');
+    }
+  }
+
+  InputDecoration _inputDecoration(String label, ThemeProvider theme) {
+    // Màu nền cho input - phù hợp với dark theme
+    // Dùng màu tối hơn một chút so với card background để có độ tương phản nhẹ
+    final inputBgColor = theme.isDarkMode
+        ? theme
+              .backgroundColor // Dùng background color của theme
+        : const Color.fromARGB(255, 53, 53, 53);
+
     return InputDecoration(
       labelText: label,
+      labelStyle: TextStyle(color: theme.textSecondaryColor),
+      hintStyle: TextStyle(
+        color: theme.textSecondaryColor.withValues(alpha: 0.6),
+      ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+        borderSide: BorderSide(
+          color: theme.surfaceColor.withValues(alpha: 0.3),
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+        borderSide: BorderSide(
+          color: theme.surfaceColor.withValues(alpha: 0.3),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+        borderSide: BorderSide(color: theme.primaryColor, width: 2),
       ),
       filled: true,
-      fillColor: const Color(0xFFF9FAFB),
+      fillColor: inputBgColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     );
   }
 
-  Widget _buildInputField(String title, Widget child) {
+  Widget _buildInputField(String title, Widget child, ThemeProvider theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF1F2937),
+            color: theme.textSecondaryColor,
           ),
         ),
         const SizedBox(height: 4),
-
         const SizedBox(height: 12),
         child,
       ],
@@ -857,13 +983,15 @@ class _TransferScreenState extends State<TransferScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: theme.backgroundColor,
       appBar: AppBar(
-        backgroundColor: ThemeProvider.goldMetallicAccent,
+        backgroundColor: theme.accentColor,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
-        title: const Text(
+        title: Text(
           'Chuyển tiền',
           style: TextStyle(
             fontSize: 20,
@@ -889,22 +1017,20 @@ class _TransferScreenState extends State<TransferScreen>
                       width: double.infinity,
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2A2A2A),
+                        color: theme.surfaceColor,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: const Color(0xFFDAA520).withOpacity(0.3),
+                          color: theme.primaryColor.withValues(alpha: 0.3),
                           width: 1.5,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: ThemeProvider.goldMetallicAccent.withValues(
-                              alpha: 0.2,
-                            ),
+                            color: theme.shadowColor,
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
+                            color: Colors.black.withValues(alpha: 0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -919,19 +1045,7 @@ class _TransferScreenState extends State<TransferScreen>
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      ThemeProvider
-                                          .goldMetallicAccent, // Dark Goldenrod
-                                      ThemeProvider
-                                          .goldMetallicSecondary, // Dark Goldenrod
-                                      ThemeProvider
-                                          .goldMetallicPrimary, // Goldenrod
-                                    ],
-                                    stops: const [0.0, 0.5, 1.0],
-                                  ),
+                                  gradient: theme.gradient,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: const Icon(
@@ -941,13 +1055,13 @@ class _TransferScreenState extends State<TransferScreen>
                                 ),
                               ),
                               const SizedBox(width: 16),
-                              const Expanded(
+                              Expanded(
                                 child: Text(
                                   'Chuyển tiền nhanh chóng và an toàn',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                    color: theme.textPrimaryColor,
                                   ),
                                 ),
                               ),
@@ -960,22 +1074,34 @@ class _TransferScreenState extends State<TransferScreen>
                             'Tài khoản nguồn',
                             DropdownButtonFormField<Account>(
                               value: _from,
-                              decoration: _inputDecoration('Chọn tài khoản'),
+                              // decoration: _inputDecoration(
+                              //   'Chọn tài khoản',
+                              //   theme,
+                              // ),
                               items: _accounts
                                   .map(
                                     (a) => DropdownMenuItem(
                                       value: a,
                                       child: Text(
                                         '${a.accountNumber} - ${a.accountName}',
-                                        style: const TextStyle(fontSize: 14),
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: theme.textPrimaryColor,
+                                        ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   )
                                   .toList(),
+                              dropdownColor: theme.surfaceColor,
+                              style: TextStyle(
+                                color: theme.textPrimaryColor,
+                                fontSize: 14,
+                              ),
                               onChanged: (v) => setState(() => _from = v),
                               isExpanded: true,
                             ),
+                            theme,
                           ),
                           const SizedBox(height: 24),
 
@@ -984,8 +1110,12 @@ class _TransferScreenState extends State<TransferScreen>
                             'Số tài khoản người nhận',
                             TextFormField(
                               controller: _toAccountCtrl,
-                              decoration: _inputDecoration('Nhập số tài khoản')
-                                  .copyWith(
+                              focusNode: _toAccountFocusNode,
+                              decoration:
+                                  _inputDecoration(
+                                    'Nhập số tài khoản',
+                                    theme,
+                                  ).copyWith(
                                     prefixIcon: null,
                                     suffixIcon: _isVerifying
                                         ? const SizedBox(
@@ -1012,8 +1142,29 @@ class _TransferScreenState extends State<TransferScreen>
                                 AccountNumberFormatter(),
                                 LengthLimitingTextInputFormatter(20),
                               ],
-                              onChanged: (v) => _fetchRecipientInfo(v),
+                              style: TextStyle(
+                                color: theme.textPrimaryColor,
+                                fontSize: 14,
+                              ),
+                              // Xóa error khi người dùng bắt đầu gõ lại
+                              onChanged: (v) {
+                                if (v.isEmpty || v.length < 8) {
+                                  // Nếu rỗng hoặc chưa đủ độ dài, xóa trạng thái verify
+                                  setState(() {
+                                    _verifiedAccountName = null;
+                                    _verificationError = null;
+                                    _toNameCtrl.clear();
+                                  });
+                                }
+                              },
+                              // Cho phép nhấn Done/Enter trên bàn phím để unfocus
+                              textInputAction: TextInputAction.done,
+                              onEditingComplete: () {
+                                // Khi nhấn Done, unfocus sẽ trigger listener của FocusNode
+                                _toAccountFocusNode.unfocus();
+                              },
                             ),
+                            theme,
                           ),
 
                           // Verification Status - removed as requested
@@ -1022,19 +1173,17 @@ class _TransferScreenState extends State<TransferScreen>
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFEF2F2),
+                                color: Colors.red.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: const Color(
-                                    0xFFEF4444,
-                                  ).withOpacity(0.3),
+                                  color: Colors.red.withValues(alpha: 0.3),
                                 ),
                               ),
                               child: Row(
                                 children: [
                                   const Icon(
                                     Icons.error,
-                                    color: Color(0xFFEF4444),
+                                    color: Colors.red,
                                     size: 16,
                                   ),
                                   const SizedBox(width: 8),
@@ -1043,7 +1192,7 @@ class _TransferScreenState extends State<TransferScreen>
                                       _verificationError!,
                                       style: const TextStyle(
                                         fontSize: 14,
-                                        color: Color(0xFFEF4444),
+                                        color: Colors.red,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -1068,19 +1217,23 @@ class _TransferScreenState extends State<TransferScreen>
                               'Tên người nhận',
                               TextFormField(
                                 controller: _toNameCtrl,
-                                decoration: _inputDecoration('Tên người nhận')
-                                    .copyWith(
+                                decoration:
+                                    _inputDecoration(
+                                      'Tên người nhận',
+                                      theme,
+                                    ).copyWith(
                                       suffixIcon: const Icon(
                                         Icons.verified,
                                         color: Colors.green,
                                       ),
                                     ),
                                 readOnly: true,
-                                style: const TextStyle(
-                                  color: Color(0xFF2C3E50),
+                                style: TextStyle(
+                                  color: theme.textPrimaryColor,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
+                              theme,
                             ),
                           ],
                           const SizedBox(height: 24),
@@ -1090,8 +1243,11 @@ class _TransferScreenState extends State<TransferScreen>
                             'Số tiền',
                             TextFormField(
                               controller: _amountCtrl,
-                              decoration: _inputDecoration('Nhập số tiền')
-                                  .copyWith(
+                              decoration:
+                                  _inputDecoration(
+                                    'Nhập số tiền',
+                                    theme,
+                                  ).copyWith(
                                     suffixIcon: TextButton(
                                       onPressed: () {
                                         _amountCtrl.text =
@@ -1100,10 +1256,10 @@ class _TransferScreenState extends State<TransferScreen>
                                             '';
                                         _validateAmount();
                                       },
-                                      child: const Text(
+                                      child: Text(
                                         'Tất cả',
                                         style: TextStyle(
-                                          color: Color(0xFF6366F1),
+                                          color: theme.primaryColor,
                                         ),
                                       ),
                                     ),
@@ -1113,8 +1269,13 @@ class _TransferScreenState extends State<TransferScreen>
                                 FilteringTextInputFormatter.digitsOnly,
                                 LengthLimitingTextInputFormatter(15),
                               ],
+                              style: TextStyle(
+                                color: theme.textPrimaryColor,
+                                fontSize: 14,
+                              ),
                               onChanged: (value) => _validateAmount(),
                             ),
+                            theme,
                           ),
 
                           // Amount Error Display
@@ -1123,19 +1284,17 @@ class _TransferScreenState extends State<TransferScreen>
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFEF2F2),
+                                color: Colors.red.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: const Color(
-                                    0xFFEF4444,
-                                  ).withOpacity(0.3),
+                                  color: Colors.red.withValues(alpha: 0.3),
                                 ),
                               ),
                               child: Row(
                                 children: [
                                   const Icon(
                                     Icons.error,
-                                    color: Color(0xFFEF4444),
+                                    color: Colors.red,
                                     size: 16,
                                   ),
                                   const SizedBox(width: 8),
@@ -1144,7 +1303,7 @@ class _TransferScreenState extends State<TransferScreen>
                                       _amountError!,
                                       style: const TextStyle(
                                         fontSize: 14,
-                                        color: Color(0xFFEF4444),
+                                        color: Colors.red,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -1158,27 +1317,29 @@ class _TransferScreenState extends State<TransferScreen>
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF0F9FF),
+                                color: theme.secondaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: const Color(
-                                    0xFF3B82F6,
-                                  ).withOpacity(0.2),
+                                  color: theme.secondaryColor.withValues(
+                                    alpha: 0.3,
+                                  ),
                                 ),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.account_balance_wallet,
-                                    color: Color(0xFF3B82F6),
+                                    color: theme.secondaryColor,
                                     size: 20,
                                   ),
                                   const SizedBox(width: 12),
                                   Text(
                                     'Số dư khả dụng: ${_formatCurrency(_from!.availableBalance)} VND',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 14,
-                                      color: Color(0xFF3B82F6),
+                                      color: theme.secondaryColor,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -1195,9 +1356,15 @@ class _TransferScreenState extends State<TransferScreen>
                               controller: _noteCtrl,
                               decoration: _inputDecoration(
                                 'Nhập nội dung giao dịch',
+                                theme,
+                              ),
+                              style: TextStyle(
+                                color: theme.textPrimaryColor,
+                                fontSize: 14,
                               ),
                               maxLines: 2,
                             ),
+                            theme,
                           ),
                         ],
                       ),
@@ -1211,7 +1378,7 @@ class _TransferScreenState extends State<TransferScreen>
                       child: ElevatedButton(
                         onPressed: _submitting ? null : _submit,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF6366F1),
+                          backgroundColor: theme.primaryColor,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(

@@ -608,8 +608,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     const SizedBox(width: 12),
                     // Transaction Details
                     Expanded(
+                      flex: 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             transaction.description ?? 'Giao dịch',
@@ -624,29 +626,37 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              Text(
-                                _formatDate(transaction.processedAt),
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  color: themeProvider.textSecondaryColor,
+                              Flexible(
+                                child: Text(
+                                  _formatDate(transaction.processedAt),
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: themeProvider.textSecondaryColor,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: statusColor.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  status,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                    color: statusColor,
+                              Flexible(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: statusColor.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    status,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      color: statusColor,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ),
@@ -655,29 +665,44 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         ],
                       ),
                     ),
+                    const SizedBox(width: 8),
                     // Amount
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '${isCredit ? '+' : '-'}${_formatCurrency(transaction.amount.abs())} VND',
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: amountColor,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          transaction.transactionNumber,
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            color: themeProvider.textSecondaryColor.withValues(
-                              alpha: 0.7,
+                    Flexible(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              '${isCredit ? '+' : '-'}${_formatCurrency(transaction.amount.abs())} VND',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: amountColor,
+                              ),
+                              textAlign: TextAlign.end,
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 4),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              transaction.transactionNumber,
+                              style: GoogleFonts.inter(
+                                fontSize: 10,
+                                color: themeProvider.textSecondaryColor
+                                    .withValues(alpha: 0.7),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

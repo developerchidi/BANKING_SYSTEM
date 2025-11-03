@@ -23,9 +23,10 @@ void main() async {
   await AuthService.initialize();
   print('🔐 Banking App: Authentication service initialized');
 
-  // Use bundled fonts to avoid runtime fetching on devices (prevents missing text)
-  GoogleFonts.config.allowRuntimeFetching = false;
-  print('🎨 Banking App: Fonts configured');
+  // Enable runtime fetching for Google Fonts (fonts will be downloaded if not in assets)
+  // For production, consider bundling fonts in assets for better performance
+  GoogleFonts.config.allowRuntimeFetching = true;
+  print('🎨 Banking App: Fonts configured (runtime fetching enabled)');
 
   // Set up error handling
   ErrorWidget.builder = (FlutterErrorDetails details) {

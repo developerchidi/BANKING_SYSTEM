@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/api_config.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -148,20 +149,15 @@ class NotificationService {
     }
 
     try {
+      final wsUrl = '${ApiConfig.wsUrl}?userId=$_userId&token=$_accessToken';
       print('🔌 Attempting to connect to WebSocket...');
-      print(
-        '   URL: ws://localhost:3001/ws/notifications?userId=$_userId&token=${_accessToken?.substring(0, 20)}...',
-      );
+      print('   URL: $wsUrl');
 
       // Disconnect any existing connection first
       await disconnect();
 
       // Connect to WebSocket with authentication
-      _channel = WebSocketChannel.connect(
-        Uri.parse(
-          'ws://localhost:3001/ws/notifications?userId=$_userId&token=$_accessToken',
-        ),
-      );
+      _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
 
       _subscription = _channel!.stream.listen(
         _handleWebSocketMessage,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../models/transaction.dart';
 import '../../models/account.dart';
 import '../../services/banking_service.dart';
@@ -325,12 +324,12 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
-        title: Text(
+        title: const Text(
           'Lịch sử giao dịch',
-          style: GoogleFonts.inter(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF1F2937),
+            color: Color(0xFF1F2937),
           ),
         ),
         leading: IconButton(
@@ -370,8 +369,8 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                     },
                     decoration: InputDecoration(
                       hintText: 'Tìm kiếm giao dịch...',
-                      hintStyle: GoogleFonts.inter(
-                        color: const Color(0xFF64748B),
+                      hintStyle: const TextStyle(
+                        color: Color(0xFF64748B),
                         fontSize: 14,
                       ),
                       prefixIcon: const Icon(
@@ -385,9 +384,9 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                         vertical: 12,
                       ),
                     ),
-                    style: GoogleFonts.inter(
+                    style: const TextStyle(
                       fontSize: 14,
-                      color: const Color(0xFF1E293B),
+                      color: Color(0xFF1E293B),
                     ),
                   ),
                 ),
@@ -395,40 +394,43 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                 // Filter Chips
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: _filterOptions.map((filter) {
-                      final isSelected = _selectedFilter == filter['value'];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: FilterChip(
-                          label: Text(
-                            filter['label']!,
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Row(
+                      children: _filterOptions.map((filter) {
+                        final isSelected = _selectedFilter == filter['value'];
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: FilterChip(
+                            label: Text(
+                              filter['label']!,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: isSelected
+                                    ? Colors.white
+                                    : const Color(0xFF64748B),
+                              ),
+                            ),
+                            selected: isSelected,
+                            onSelected: (selected) {
+                              setState(() {
+                                _selectedFilter = filter['value']!;
+                              });
+                              _loadTransactions(refresh: true);
+                            },
+                            backgroundColor: const Color(0xFFF1F5F9),
+                            selectedColor: const Color(0xFF6366F1),
+                            checkmarkColor: Colors.white,
+                            side: BorderSide(
                               color: isSelected
-                                  ? Colors.white
-                                  : const Color(0xFF64748B),
+                                  ? const Color(0xFF6366F1)
+                                  : const Color(0xFFE2E8F0),
                             ),
                           ),
-                          selected: isSelected,
-                          onSelected: (selected) {
-                            setState(() {
-                              _selectedFilter = filter['value']!;
-                            });
-                            _loadTransactions(refresh: true);
-                          },
-                          backgroundColor: const Color(0xFFF1F5F9),
-                          selectedColor: const Color(0xFF6366F1),
-                          checkmarkColor: Colors.white,
-                          side: BorderSide(
-                            color: isSelected
-                                ? const Color(0xFF6366F1)
-                                : const Color(0xFFE2E8F0),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -466,19 +468,16 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
           const SizedBox(height: 16),
           Text(
             'Có lỗi xảy ra',
-            style: GoogleFonts.inter(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF1E293B),
+              color: Color(0xFF1E293B),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             _error ?? 'Không thể tải dữ liệu',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              color: const Color(0xFF64748B),
-            ),
+            style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -491,9 +490,9 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: Text(
+            child: const Text(
               'Thử lại',
-              style: GoogleFonts.inter(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
@@ -518,19 +517,16 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
           const SizedBox(height: 16),
           Text(
             'Chưa có giao dịch',
-            style: GoogleFonts.inter(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF1E293B),
+              color: Color(0xFF1E293B),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Bạn chưa có giao dịch nào trong khoảng thời gian này',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              color: const Color(0xFF64748B),
-            ),
+            style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -631,19 +627,19 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
               children: [
                 Text(
                   dateKey,
-                  style: GoogleFonts.inter(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1E293B),
+                    color: Color(0xFF1E293B),
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   '${_groupedTransactions[dateKey]!.length} giao dịch',
-                  style: GoogleFonts.inter(
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: const Color(0xFF64748B),
+                    color: Color(0xFF64748B),
                   ),
                 ),
               ],
@@ -715,15 +711,17 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                 const SizedBox(width: 12),
                 // Transaction Details
                 Expanded(
+                  flex: 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         transaction.description ?? 'Giao dịch',
-                        style: GoogleFonts.inter(
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1E293B),
+                          color: Color(0xFF1E293B),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -731,29 +729,37 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Text(
-                            _formatDate(transaction.processedAt),
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: const Color(0xFF64748B),
+                          Flexible(
+                            child: Text(
+                              _formatDate(transaction.processedAt),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF64748B),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              status,
-                              style: GoogleFonts.inter(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                                color: statusColor,
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                status,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: statusColor,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ),
@@ -762,27 +768,43 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                     ],
                   ),
                 ),
+                const SizedBox(width: 8),
                 // Amount
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '${isCredit ? '+' : '-'}${_formatCurrency(transaction.amount.abs())} VND',
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: amountColor,
+                Flexible(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '${isCredit ? '+' : '-'}${_formatCurrency(transaction.amount.abs())} VND',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: amountColor,
+                          ),
+                          textAlign: TextAlign.end,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      transaction.transactionNumber,
-                      style: GoogleFonts.inter(
-                        fontSize: 10,
-                        color: const Color(0xFF94A3B8),
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          transaction.transactionNumber,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Color(0xFF94A3B8),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.end,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
