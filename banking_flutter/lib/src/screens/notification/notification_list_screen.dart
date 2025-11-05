@@ -342,7 +342,8 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                               border: Border.all(
                                 color: isRead
                                     ? Colors.transparent
-                                    : themeProvider.primaryColor.withOpacity(
+                                    : themeProvider.primaryColor.withValues(
+                                                alpha:
                                         0.3,
                                       ),
                                 width: 1,
@@ -398,7 +399,8 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                                   style: TextStyle(
                                     fontSize: 11,
                                     color: themeProvider.textSecondaryColor
-                                        .withOpacity(0.6),
+                                        .withValues(
+                                                alpha:0.6),
                                   ),
                                 ),
                               ],
@@ -427,7 +429,8 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
         _loadNotifications(refresh: true);
       },
       backgroundColor: themeProvider.surfaceColor,
-      selectedColor: themeProvider.primaryColor.withOpacity(0.2),
+      selectedColor: themeProvider.primaryColor.withValues(
+                                                alpha:0.2),
       labelStyle: TextStyle(
         color: isSelected
             ? themeProvider.primaryColor

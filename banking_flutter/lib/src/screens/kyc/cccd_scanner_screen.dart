@@ -403,7 +403,8 @@ class _CCCDScannerScreenState extends State<CCCDScannerScreen> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withValues(
+                                                alpha:0.5),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.close, color: Colors.white, size: 20),
@@ -424,7 +425,8 @@ class _CCCDScannerScreenState extends State<CCCDScannerScreen> {
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(
+                                                alpha:0.5),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -461,7 +463,8 @@ class _CCCDScannerScreenState extends State<CCCDScannerScreen> {
           // Scanning Overlay
           Positioned.fill(
             child: Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(
+                                                alpha:0.3),
               child: Column(
                 children: [
                   const Spacer(),
@@ -571,7 +574,8 @@ class _CCCDScannerScreenState extends State<CCCDScannerScreen> {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
+                      color: Colors.black.withValues(
+                                                alpha:0.7),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -602,7 +606,8 @@ class _CCCDScannerScreenState extends State<CCCDScannerScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                  colors: [Colors.transparent, Colors.black.withValues(
+                                                alpha:0.8)],
                 ),
               ),
               child: Column(
@@ -611,9 +616,11 @@ class _CCCDScannerScreenState extends State<CCCDScannerScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(
+                                                alpha:0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withOpacity(0.2)),
+                      border: Border.all(color: Colors.white.withValues(
+                                                alpha:0.2)),
                     ),
                     child: Column(
                       children: [
@@ -667,7 +674,8 @@ class _CCCDScannerScreenState extends State<CCCDScannerScreen> {
                             border: Border.all(color: Colors.white, width: 3),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(
+                                                alpha:0.3),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),

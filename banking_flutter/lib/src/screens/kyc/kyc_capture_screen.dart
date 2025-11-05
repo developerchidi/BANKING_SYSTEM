@@ -141,7 +141,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white.withValues(
+                                                alpha:0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
@@ -168,7 +169,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                               Text(
                                 'Bước ${_currentStep + 1}/${_steps.length}',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.7),
+                                  color: Colors.white.withValues(
+                                                alpha:0.7),
                                   fontSize: 12,
                                 ),
                               ),
@@ -181,10 +183,12 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFA855F7).withOpacity(0.2),
+                            color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.2),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: const Color(0xFFA855F7).withOpacity(0.3),
+                              color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.3),
                             ),
                           ),
                           child: Text(
@@ -205,7 +209,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                     Container(
                       height: 6,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(
+                                                alpha:0.1),
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: FractionallySizedBox(
@@ -237,12 +242,14 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(
+                                                alpha:0.05),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  border: Border.all(color: Colors.white.withValues(
+                                                alpha:0.1)),
                 ),
                 child: Row(
                   children: [
@@ -285,7 +292,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFA855F7).withOpacity(0.3),
+                              color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.3),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             ),
@@ -393,13 +401,16 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFFA855F7).withOpacity(0.1),
-                  const Color(0xFF7C3AED).withOpacity(0.05),
+                  const Color(0xFFA855F7).withValues(
+                                                alpha:0.1),
+                  const Color(0xFF7C3AED).withValues(
+                                                alpha:0.05),
                 ],
               ),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFFA855F7).withOpacity(0.3),
+                color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.3),
               ),
             ),
             child: Column(
@@ -415,7 +426,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFA855F7).withOpacity(0.3),
+                        color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.3),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),
@@ -448,7 +460,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                   'Đặt thẻ sinh viên vào khung và quét để trích xuất thông tin',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(
+                                                alpha:0.7),
                     height: 1.5,
                   ),
                   textAlign: TextAlign.center,
@@ -467,7 +480,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFA855F7).withOpacity(0.3),
+                        color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
@@ -514,12 +528,15 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFF27AE60).withOpacity(0.1),
-            const Color(0xFF2ECC71).withOpacity(0.05),
+            const Color(0xFF27AE60).withValues(
+                                                alpha:0.1),
+            const Color(0xFF2ECC71).withValues(
+                                                alpha:0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF27AE60).withOpacity(0.3)),
+        border: Border.all(color: const Color(0xFF27AE60).withValues(
+                                                alpha:0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -562,7 +579,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                           _getFieldLabel(entry.key),
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(
+                                                alpha:0.7),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -675,13 +693,16 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF27AE60).withOpacity(0.1),
-                  const Color(0xFF2ECC71).withOpacity(0.05),
+                  const Color(0xFF27AE60).withValues(
+                                                alpha:0.1),
+                  const Color(0xFF2ECC71).withValues(
+                                                alpha:0.05),
                 ],
               ),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFF27AE60).withOpacity(0.3),
+                color: const Color(0xFF27AE60).withValues(
+                                                alpha:0.3),
               ),
             ),
             child: Column(
@@ -696,7 +717,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF27AE60).withOpacity(0.3),
+                        color: const Color(0xFF27AE60).withValues(
+                                                alpha:0.3),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),
@@ -722,7 +744,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                   'Tất cả thông tin đã được trích xuất thành công',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(
+                                                alpha:0.7),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -761,12 +784,15 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withOpacity(0.1),
-                  Colors.white.withOpacity(0.05),
+                  Colors.white.withValues(
+                                                alpha:0.1),
+                  Colors.white.withValues(
+                                                alpha:0.05),
                 ],
               ),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withOpacity(0.2)),
+              border: Border.all(color: Colors.white.withValues(
+                                                alpha:0.2)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -807,7 +833,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: const Color(0xFFA855F7).withOpacity(0.3),
+                        color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.3),
                         width: 2,
                       ),
                     ),
@@ -818,7 +845,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: Colors.grey.withOpacity(0.3),
+                            color: Colors.grey.withValues(
+                                                alpha:0.3),
                             child: const Center(
                               child: Icon(
                                 Icons.image_not_supported,
@@ -850,13 +878,15 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                         Icon(
                           Icons.info_outline,
                           size: 48,
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(
+                                                alpha:0.5),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Đang xử lý thông tin...',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(
+                                                alpha:0.7),
                             fontSize: 14,
                           ),
                         ),
@@ -876,13 +906,16 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFFA855F7).withOpacity(0.1),
-                  const Color(0xFF7C3AED).withOpacity(0.05),
+                  const Color(0xFFA855F7).withValues(
+                                                alpha:0.1),
+                  const Color(0xFF7C3AED).withValues(
+                                                alpha:0.05),
                 ],
               ),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFFA855F7).withOpacity(0.3),
+                color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.3),
               ),
             ),
             child: Column(
@@ -952,19 +985,25 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
         gradient: LinearGradient(
           colors: isCompleted
               ? [
-                  const Color(0xFF27AE60).withOpacity(0.1),
-                  const Color(0xFF2ECC71).withOpacity(0.05),
+                  const Color(0xFF27AE60).withValues(
+                                                alpha:0.1),
+                  const Color(0xFF2ECC71).withValues(
+                                                alpha:0.05),
                 ]
               : [
-                  Colors.white.withOpacity(0.05),
-                  Colors.white.withOpacity(0.02),
+                  Colors.white.withValues(
+                                                alpha:0.05),
+                  Colors.white.withValues(
+                                                alpha:0.02),
                 ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isCompleted
-              ? const Color(0xFF27AE60).withOpacity(0.3)
-              : Colors.white.withOpacity(0.1),
+              ? const Color(0xFF27AE60).withValues(
+                                                alpha:0.3)
+              : Colors.white.withValues(
+                                                alpha:0.1),
         ),
       ),
       child: Column(
@@ -975,12 +1014,14 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
             decoration: BoxDecoration(
               color: isCompleted
                   ? const Color(0xFF27AE60)
-                  : Colors.white.withOpacity(0.2),
+                  : Colors.white.withValues(
+                                                alpha:0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(
               isCompleted ? Icons.check : icon,
-              color: isCompleted ? Colors.white : Colors.white.withOpacity(0.5),
+              color: isCompleted ? Colors.white : Colors.white.withValues(
+                                                alpha:0.5),
               size: 20,
             ),
           ),
@@ -992,7 +1033,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
               fontWeight: FontWeight.w600,
               color: isCompleted
                   ? const Color(0xFF27AE60)
-                  : Colors.white.withOpacity(0.7),
+                  : Colors.white.withValues(
+                                                alpha:0.7),
             ),
           ),
         ],
@@ -1048,7 +1090,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
               label,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(
+                                                alpha:0.7),
                 fontWeight: FontWeight.w500,
               ),
             ),

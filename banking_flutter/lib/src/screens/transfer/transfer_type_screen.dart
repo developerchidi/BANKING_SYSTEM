@@ -189,7 +189,7 @@ class _TransferTypeScreenState extends State<TransferTypeScreen> {
             border: Border.all(color: const Color(0x11000000)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.02),
+                color: Colors.black.withValues(alpha: 0.02),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
@@ -204,7 +204,7 @@ class _TransferTypeScreenState extends State<TransferTypeScreen> {
                   height: 52,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
-                    color: color.withOpacity(0.10),
+                    color: color.withValues(alpha: 0.10),
                   ),
                   child: Icon(icon, color: color, size: 24),
                 ),

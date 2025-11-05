@@ -400,7 +400,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
         leading: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(12),
           ),
           child: IconButton(
@@ -426,7 +427,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
                 Container(
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(
+                                                alpha:0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
@@ -545,7 +547,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
                               colors: [
                                 Colors.transparent,
                                 const Color(0xFF00D4AA),
-                                const Color(0xFF00D4AA).withOpacity(0.8),
+                                const Color(0xFF00D4AA).withValues(
+                                                alpha:0.8),
                                 Colors.transparent,
                               ],
                               stops: const [0.0, 0.3, 0.7, 1.0],
@@ -553,7 +556,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
                             borderRadius: BorderRadius.circular(2),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF00D4AA).withOpacity(0.5),
+                                color: const Color(0xFF00D4AA).withValues(
+                                                alpha:0.5),
                                 blurRadius: 8,
                                 spreadRadius: 1,
                               ),
@@ -585,7 +589,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: Colors.black.withValues(
+                                                alpha:0.15),
                   blurRadius: 30,
                   offset: const Offset(0, -10),
                 ),
@@ -638,7 +643,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF00D4AA).withOpacity(0.1),
+            color: const Color(0xFF00D4AA).withValues(
+                                                alpha:0.1),
             borderRadius: BorderRadius.circular(20),
           ),
           child: const CircularProgressIndicator(
@@ -673,7 +679,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF00D4AA).withOpacity(0.1),
+            color: const Color(0xFF00D4AA).withValues(
+                                                alpha:0.1),
             borderRadius: BorderRadius.circular(20),
           ),
           child: const Icon(
@@ -745,13 +752,16 @@ class _QRScannerScreenState extends State<QRScannerScreen>
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  const Color(0xFF00D4AA).withOpacity(0.1),
-                  const Color(0xFF00D4AA).withOpacity(0.05),
+                  const Color(0xFF00D4AA).withValues(
+                                                alpha:0.1),
+                  const Color(0xFF00D4AA).withValues(
+                                                alpha:0.05),
                 ],
               ),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: const Color(0xFF00D4AA).withOpacity(0.2),
+                color: const Color(0xFF00D4AA).withValues(
+                                                alpha:0.2),
                 width: 1.5,
               ),
             ),
@@ -818,7 +828,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
                             borderRadius: BorderRadius.circular(16),
                           ),
                           elevation: 0,
-                          shadowColor: const Color(0xFF00D4AA).withOpacity(0.3),
+                          shadowColor: const Color(0xFF00D4AA).withValues(
+                                                alpha:0.3),
                         ),
                         child: const Text(
                           'Tiếp tục thanh toán',
@@ -884,7 +895,8 @@ class QRScannerOverlay extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black.withOpacity(0.6)
+      ..color = Colors.black.withValues(
+                                                alpha:0.6)
       ..style = PaintingStyle.fill;
 
     final centerX = size.width / 2;

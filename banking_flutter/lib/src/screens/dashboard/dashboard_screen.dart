@@ -637,7 +637,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: themeProvider.primaryColor.withOpacity(0.1),
+                backgroundColor: themeProvider.primaryColor.withValues(alpha: 0.1),
                 child: Icon(
                   Ionicons.person_outline,
                   color: themeProvider.primaryColor,
@@ -690,10 +690,10 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                                     color: isKycVerified
                                         ? const Color(
                                             0xFF27AE60,
-                                          ).withOpacity(0.1)
+                                          ).withValues(alpha: 0.1)
                                         : const Color(
                                             0xFFE67E22,
-                                          ).withOpacity(0.1),
+                                          ).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                       color: isKycVerified
@@ -745,7 +745,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                                         boxShadow: [
                                           BoxShadow(
                                             color: tierInfo['shadowColor']
-                                                .withOpacity(0.3),
+                                                .withValues(alpha: 0.3),
                                             blurRadius: 4,
                                             offset: const Offset(0, 2),
                                           ),
@@ -878,20 +878,20 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: themeProvider.primaryColor.withOpacity(0.2),
+                        color: themeProvider.primaryColor.withValues(alpha: 0.2),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
                     ],
                     border: Border.all(
                       color: isDisabled
-                          ? Colors.grey.withOpacity(0.3)
-                          : themeProvider.primaryColor.withOpacity(0.3),
+                          ? Colors.grey.withValues(alpha: 0.3)
+                          : themeProvider.primaryColor.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -903,13 +903,13 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                         height: 48,
                         decoration: BoxDecoration(
                           color: isDisabled
-                              ? Colors.grey.withOpacity(0.1)
-                              : themeProvider.primaryColor.withOpacity(0.1),
+                              ? Colors.grey.withValues(alpha: 0.1)
+                              : themeProvider.primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: isDisabled
-                                ? Colors.grey.withOpacity(0.3)
-                                : themeProvider.primaryColor.withOpacity(0.3),
+                                ? Colors.grey.withValues(alpha: 0.3)
+                                : themeProvider.primaryColor.withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),
@@ -1207,7 +1207,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                                                     ),
                                                 decoration: BoxDecoration(
                                                   color: Colors.white
-                                                      .withOpacity(0.15),
+                                                      .withValues(alpha: 0.15),
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                 ),
@@ -1235,12 +1235,12 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                                                     ),
                                                 decoration: BoxDecoration(
                                                   color: Colors.white
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                   border: Border.all(
                                                     color: Colors.white
-                                                        .withOpacity(0.3),
+                                                        .withValues(alpha: 0.3),
                                                     width: 1,
                                                   ),
                                                 ),
@@ -1288,21 +1288,21 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                               color: themeProvider.surfaceColor,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: themeProvider.primaryColor.withOpacity(
-                                  0.3,
+                                color: themeProvider.primaryColor.withValues(
+                                  alpha: 0.3,
                                 ),
                                 width: 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: themeProvider.primaryColor.withOpacity(
-                                    0.2,
+                                  color: themeProvider.primaryColor.withValues(
+                                    alpha: 0.2,
                                   ),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
+                                  color: Colors.black.withValues(alpha: 0.3),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -1488,21 +1488,21 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                               color: themeProvider.surfaceColor,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: themeProvider.primaryColor.withOpacity(
-                                  0.3,
+                                color: themeProvider.primaryColor.withValues(
+                                  alpha: 0.3,
                                 ),
                                 width: 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: themeProvider.primaryColor.withOpacity(
-                                    0.2,
+                                  color: themeProvider.primaryColor.withValues(
+                                    alpha: 0.2,
                                   ),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
+                                  color: Colors.black.withValues(alpha: 0.3),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -1633,7 +1633,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                                   separatorBuilder: (_, __) => Divider(
                                     height: 1,
                                     color: themeProvider.primaryColor
-                                        .withOpacity(0.2),
+                                        .withValues(alpha: 0.2),
                                   ),
                                   itemBuilder: (_, i) {
                                     final t = items[i];
@@ -1645,7 +1645,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                                       leading: CircleAvatar(
                                         backgroundColor: themeProvider
                                             .primaryColor
-                                            .withOpacity(0.12),
+                                            .withValues(alpha: 0.12),
                                         child: Icon(
                                           _isTransactionCredit(t)
                                               ? Ionicons
@@ -1739,12 +1739,12 @@ class _ServiceTile extends StatelessWidget {
               color: themeProvider.surfaceColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: themeProvider.primaryColor.withOpacity(0.3),
+                color: themeProvider.primaryColor.withValues(alpha: 0.3),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: themeProvider.primaryColor.withOpacity(0.1),
+                  color: themeProvider.primaryColor.withValues(alpha: 0.1),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),

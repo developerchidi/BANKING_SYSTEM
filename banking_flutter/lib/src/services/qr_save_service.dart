@@ -191,7 +191,8 @@ class QRSaveService {
   /// Vẽ shadow cho element
   static void _drawShadow(Canvas canvas, Rect rect, double blur) {
     final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.08)
+      ..color = Colors.black.withValues(
+                                                alpha:0.08)
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, blur);
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect.inflate(8), const Radius.circular(32)),
@@ -675,7 +676,8 @@ class QRSaveService {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(
+                                                alpha:0.1),
               blurRadius: 30,
               offset: const Offset(0, 10),
             ),
@@ -696,7 +698,8 @@ class QRSaveService {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF8B5CF6).withOpacity(0.3),
+                    color: const Color(0xFF8B5CF6).withValues(
+                                                alpha:0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -734,7 +737,8 @@ class QRSaveService {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(
+                                                alpha:0.05),
                     blurRadius: 20,
                     offset: const Offset(0, 4),
                   ),

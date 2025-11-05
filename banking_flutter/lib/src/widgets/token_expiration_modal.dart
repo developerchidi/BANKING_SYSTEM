@@ -48,7 +48,8 @@ class TokenExpirationModal extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(
+                                                alpha:0.1),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -75,7 +76,8 @@ class TokenExpirationModal extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFFF6B6B).withOpacity(0.3),
+                      color: const Color(0xFFFF6B6B).withValues(
+                                                alpha:0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -166,7 +168,8 @@ class TokenExpirationModal extends StatelessWidget {
                         backgroundColor: const Color(0xFF3498DB),
                         foregroundColor: Colors.white,
                         elevation: 3,
-                        shadowColor: const Color(0xFF3498DB).withOpacity(0.3),
+                        shadowColor: const Color(0xFF3498DB).withValues(
+                                                alpha:0.3),
                       ),
                       child: const Text(
                         'Đăng nhập lại',

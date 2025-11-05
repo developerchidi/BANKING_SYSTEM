@@ -335,7 +335,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: amountColor.withOpacity(0.1),
+                      color: amountColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Icon(icon, color: amountColor, size: 40),
@@ -368,7 +368,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.1),
+                      color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(

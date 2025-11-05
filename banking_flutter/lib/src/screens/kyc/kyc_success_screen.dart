@@ -93,7 +93,8 @@ class _KYCSuccessScreenState extends State<KYCSuccessScreen>
                                 BoxShadow(
                                   color: const Color(
                                     0xFF27AE60,
-                                  ).withOpacity(0.3),
+                                  ).withValues(
+                                                alpha:0.3),
                                   blurRadius: 20,
                                   offset: const Offset(0, 10),
                                 ),
@@ -143,12 +144,15 @@ class _KYCSuccessScreenState extends State<KYCSuccessScreen>
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.06),
+                  color: Colors.white.withValues(
+                                                alpha:0.06),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  border: Border.all(color: Colors.white.withValues(
+                                                alpha:0.08)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.25),
+                      color: Colors.black.withValues(
+                                                alpha:0.25),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -163,7 +167,8 @@ class _KYCSuccessScreenState extends State<KYCSuccessScreen>
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.12),
+                            color: Colors.white.withValues(
+                                                alpha:0.12),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
@@ -213,9 +218,11 @@ class _KYCSuccessScreenState extends State<KYCSuccessScreen>
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.06),
+                  color: Colors.white.withValues(
+                                                alpha:0.06),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  border: Border.all(color: Colors.white.withValues(
+                                                alpha:0.08)),
                 ),
                 child: Column(
                   children: [

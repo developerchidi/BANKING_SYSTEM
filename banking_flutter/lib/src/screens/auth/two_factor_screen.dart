@@ -286,7 +286,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFA855F7).withOpacity(0.15),
+                    color: const Color(0xFFA855F7).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(1000),
                   ),
                 ),
@@ -298,7 +298,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFBBF24).withOpacity(0.15),
+                    color: const Color(0xFFFBBF24).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(1000),
                   ),
                 ),
@@ -310,7 +310,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEC4899).withOpacity(0.15),
+                    color: const Color(0xFFEC4899).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(1000),
                   ),
                 ),
@@ -410,12 +410,12 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                             constraints: const BoxConstraints(maxWidth: 500),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.1),
+                                color: Colors.white.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(
                                   isSmall ? 16 : 24,
                                 ),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                 ),
                               ),
                               child: Padding(
@@ -429,14 +429,14 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                                         decoration: BoxDecoration(
                                           color: const Color(
                                             0xFFFCA5A5,
-                                          ).withOpacity(0.2),
+                                          ).withValues(alpha: 0.2),
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
                                           border: Border.all(
                                             color: const Color(
                                               0xFFFCA5A5,
-                                            ).withOpacity(0.3),
+                                            ).withValues(alpha: 0.3),
                                           ),
                                         ),
                                         child: Row(
@@ -468,14 +468,14 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                                         decoration: BoxDecoration(
                                           color: const Color(
                                             0xFF86EFAC,
-                                          ).withOpacity(0.2),
+                                          ).withValues(alpha: 0.2),
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
                                           border: Border.all(
                                             color: const Color(
                                               0xFF86EFAC,
-                                            ).withOpacity(0.3),
+                                            ).withValues(alpha: 0.3),
                                           ),
                                         ),
                                         child: Row(
@@ -508,10 +508,10 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                                         horizontal: 20,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.08),
+                                        color: Colors.white.withValues(alpha: 0.08),
                                         borderRadius: BorderRadius.circular(16),
                                         border: Border.all(
-                                          color: Colors.white.withOpacity(0.1),
+                                          color: Colors.white.withValues(alpha: 0.1),
                                           width: 1,
                                         ),
                                       ),
@@ -585,11 +585,11 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                                                       hintText: '•',
                                                       hintStyle: TextStyle(
                                                         color: Colors.white
-                                                            .withOpacity(0.3),
+                                                            .withValues(alpha: 0.3),
                                                       ),
                                                       filled: true,
                                                       fillColor: Colors.white
-                                                          .withOpacity(0.1),
+                                                          .withValues(alpha: 0.1),
                                                       border: OutlineInputBorder(
                                                         borderRadius:
                                                             BorderRadius.circular(
@@ -597,7 +597,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                                                             ),
                                                         borderSide: BorderSide(
                                                           color: Colors.white
-                                                              .withOpacity(0.3),
+                                                              .withValues(alpha: 0.3),
                                                           width: 2,
                                                         ),
                                                       ),
@@ -612,8 +612,8 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                                                             borderSide: BorderSide(
                                                               color: Colors
                                                                   .white
-                                                                  .withOpacity(
-                                                                    0.3,
+                                                                  .withValues(
+                                                                    alpha: 0.3,
                                                                   ),
                                                               width: 2,
                                                             ),
@@ -675,8 +675,8 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                                             ),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.black.withOpacity(
-                                                  0.3,
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.3,
                                                 ),
                                                 offset: const Offset(0, 4),
                                                 blurRadius: 8,

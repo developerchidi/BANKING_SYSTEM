@@ -253,7 +253,8 @@ class _SelfiePreparationScreenState extends State<SelfiePreparationScreen>
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFF27AE60).withOpacity(0.3),
+                                        color: const Color(0xFF27AE60).withValues(
+                                                alpha:0.3),
                                         blurRadius: 20,
                                         offset: const Offset(0, 10),
                                       ),
@@ -304,14 +305,17 @@ class _SelfiePreparationScreenState extends State<SelfiePreparationScreen>
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
+                        color: Colors.white.withValues(
+                                                alpha:0.06),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(
+                                                alpha:0.08),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
+                            color: Colors.black.withValues(
+                                                alpha:0.25),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -357,11 +361,13 @@ class _SelfiePreparationScreenState extends State<SelfiePreparationScreen>
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
+                        color: Colors.white.withValues(
+                                                alpha:0.06),
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
+                            color: Colors.black.withValues(
+                                                alpha:0.25),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -376,7 +382,8 @@ class _SelfiePreparationScreenState extends State<SelfiePreparationScreen>
                                 width: 40,
                                 height: 40,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF2563EB).withOpacity(0.1),
+                                  color: const Color(0xFF2563EB).withValues(
+                                                alpha:0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
@@ -466,7 +473,8 @@ class _SelfiePreparationScreenState extends State<SelfiePreparationScreen>
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(
+                                                alpha:0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(

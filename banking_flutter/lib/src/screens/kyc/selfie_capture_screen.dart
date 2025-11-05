@@ -489,7 +489,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.8),
+                    Colors.black.withValues(
+                                                alpha:0.8),
                     Colors.transparent,
                   ],
                 ),
@@ -501,7 +502,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withValues(
+                                                alpha:0.5),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -542,7 +544,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                       ? (_faceInFrame 
                           ? const Color(0xFF27AE60)  // Green when in frame
                           : const Color(0xFFFF6B6B)) // Red when not in frame
-                      : Colors.white.withOpacity(0.3), // White when no face detected
+                      : Colors.white.withValues(
+                                                alpha:0.3), // White when no face detected
                   width: 4,
                 ),
                 shape: BoxShape.rectangle,
@@ -565,7 +568,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                                 ? (_faceInFrame 
                                     ? const Color(0xFF27AE60)
                                     : const Color(0xFFFF6B6B))
-                                : Colors.white.withOpacity(0.5),
+                                : Colors.white.withValues(
+                                                alpha:0.5),
                           ),
                         );
                       },
@@ -583,10 +587,12 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withValues(
+                                                alpha:0.7),
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(
+                                                alpha:0.2),
                   width: 1,
                 ),
               ),
@@ -619,7 +625,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                           ? const Color(0xFFFF9500)  // Orange when countdown
                           : _faceDetected && _faceInFrame
                               ? const Color(0xFF27AE60)  // Green when ready
-                              : Colors.grey.withOpacity(0.5),  // Grey when not ready
+                              : Colors.grey.withValues(
+                                                alpha:0.5),  // Grey when not ready
                   border: Border.all(
                     color: Colors.white,
                     width: 4,
@@ -627,12 +634,16 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                   boxShadow: [
                     BoxShadow(
                       color: _isRecording 
-                          ? const Color(0xFFE74C3C).withOpacity(0.3)
+                          ? const Color(0xFFE74C3C).withValues(
+                                                alpha:0.3)
                           : _isCountdown 
-                              ? const Color(0xFFFF9500).withOpacity(0.3)
+                              ? const Color(0xFFFF9500).withValues(
+                                                alpha:0.3)
                               : _faceDetected && _faceInFrame
-                                  ? const Color(0xFF27AE60).withOpacity(0.3)
-                                  : Colors.grey.withOpacity(0.3),
+                                  ? const Color(0xFF27AE60).withValues(
+                                                alpha:0.3)
+                                  : Colors.grey.withValues(
+                                                alpha:0.3),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -664,10 +675,12 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withValues(
+                                                alpha:0.7),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(
+                                                alpha:0.2),
                   width: 1,
                 ),
               ),
@@ -720,7 +733,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                 ? (_faceInFrame 
                     ? const Color(0xFF27AE60)
                     : const Color(0xFFFF6B6B))
-                : Colors.white.withOpacity(0.3),
+                : Colors.white.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -737,7 +751,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                 ? (_faceInFrame 
                     ? const Color(0xFF27AE60)
                     : const Color(0xFFFF6B6B))
-                : Colors.white.withOpacity(0.3),
+                : Colors.white.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -754,7 +769,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                 ? (_faceInFrame 
                     ? const Color(0xFF27AE60)
                     : const Color(0xFFFF6B6B))
-                : Colors.white.withOpacity(0.3),
+                : Colors.white.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -771,7 +787,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
                 ? (_faceInFrame 
                     ? const Color(0xFF27AE60)
                     : const Color(0xFFFF6B6B))
-                : Colors.white.withOpacity(0.3),
+                : Colors.white.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -789,7 +806,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
           width: 30,
           height: 6,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -802,7 +820,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
           width: 30,
           height: 6,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -815,7 +834,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
           width: 6,
           height: 30,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -828,7 +848,8 @@ class _SelfieCaptureScreenState extends State<SelfieCaptureScreen>
           width: 6,
           height: 30,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(
+                                                alpha:0.3),
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -881,7 +902,8 @@ class OvalScanLinePainter extends CustomPainter {
         
         // Add glow effect
         final glowPaint = Paint()
-          ..color = color.withOpacity(0.3)
+          ..color = color.withValues(
+                                                alpha:0.3)
           ..strokeWidth = 8.0
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round;

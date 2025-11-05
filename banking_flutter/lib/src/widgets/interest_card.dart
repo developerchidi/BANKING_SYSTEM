@@ -82,7 +82,8 @@ class _InterestCardState extends State<InterestCard> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(
+                                                alpha:0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -157,7 +158,8 @@ class _InterestCardState extends State<InterestCard> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(
+                                                alpha:0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -172,7 +174,8 @@ class _InterestCardState extends State<InterestCard> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(
+                                                alpha:0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.savings, color: Colors.white, size: 24),
@@ -254,13 +257,15 @@ class _InterestCardState extends State<InterestCard> {
   Widget _buildInfoRow(String label, String value, IconData icon) {
     return Row(
       children: [
-        Icon(icon, color: Colors.white.withOpacity(0.8), size: 20),
+        Icon(icon, color: Colors.white.withValues(
+                                                alpha:0.8), size: 20),
         const SizedBox(width: 12),
         Expanded(
           child: Text(
             label,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(
+                                                alpha:0.9),
               fontSize: 14,
             ),
           ),
@@ -469,14 +474,16 @@ class _InterestHistoryScreenState extends State<InterestHistoryScreen> {
           children: [
             Icon(
               Icons.savings_outlined,
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(
+                                                alpha:0.5),
               size: 64,
             ),
             const SizedBox(height: 16),
             Text(
               'Chưa có lãi suất',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(
+                                                alpha:0.7),
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -485,7 +492,8 @@ class _InterestHistoryScreenState extends State<InterestHistoryScreen> {
             Text(
               'Lãi suất sẽ được tính và cộng vào tài khoản hàng tháng',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(
+                                                alpha:0.5),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -503,7 +511,8 @@ class _InterestHistoryScreenState extends State<InterestHistoryScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A2E),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(
+                                                alpha:0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -514,7 +523,8 @@ class _InterestHistoryScreenState extends State<InterestHistoryScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFA855F7).withOpacity(0.2),
+                  color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -539,7 +549,8 @@ class _InterestHistoryScreenState extends State<InterestHistoryScreen> {
                     Text(
                       interest.account?.accountNumber ?? '',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(
+                                                alpha:0.7),
                         fontSize: 12,
                       ),
                     ),
@@ -619,12 +630,14 @@ class _InterestHistoryScreenState extends State<InterestHistoryScreen> {
       children: [
         Row(
           children: [
-            Icon(icon, color: Colors.white.withOpacity(0.6), size: 16),
+            Icon(icon, color: Colors.white.withValues(
+                                                alpha:0.6), size: 16),
             const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(
+                                                alpha:0.7),
                 fontSize: 12,
               ),
             ),

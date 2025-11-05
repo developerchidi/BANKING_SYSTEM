@@ -89,7 +89,8 @@ class _VerifyResetCodeScreenState extends State<VerifyResetCodeScreen> {
                 width: 200,
                 height: 200,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFA855F7).withOpacity(0.2),
+                  color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.2),
                   borderRadius: BorderRadius.circular(1000),
                 ),
               ),
@@ -101,7 +102,8 @@ class _VerifyResetCodeScreenState extends State<VerifyResetCodeScreen> {
                 width: 150,
                 height: 150,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFBBF24).withOpacity(0.2),
+                  color: const Color(0xFFFBBF24).withValues(
+                                                alpha:0.2),
                   borderRadius: BorderRadius.circular(1000),
                 ),
               ),
@@ -113,7 +115,8 @@ class _VerifyResetCodeScreenState extends State<VerifyResetCodeScreen> {
                 width: 180,
                 height: 180,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEC4899).withOpacity(0.2),
+                  color: const Color(0xFFEC4899).withValues(
+                                                alpha:0.2),
                   borderRadius: BorderRadius.circular(1000),
                 ),
               ),
@@ -209,10 +212,12 @@ class _VerifyResetCodeScreenState extends State<VerifyResetCodeScreen> {
                               filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.06),
+                                  color: Colors.white.withValues(
+                                                alpha:0.06),
                                   borderRadius: borderRadius,
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.18),
+                                    color: Colors.white.withValues(
+                                                alpha:0.18),
                                   ),
                                 ),
                                 padding: const EdgeInsets.all(16),
@@ -227,7 +232,8 @@ class _VerifyResetCodeScreenState extends State<VerifyResetCodeScreen> {
                                         decoration: InputDecoration(
                                           labelText: 'Mã xác nhận (6 số)',
                                           filled: true,
-                                          fillColor: Colors.white.withOpacity(
+                                          fillColor: Colors.white.withValues(
+                                                alpha:
                                             0.08,
                                           ),
                                           border: OutlineInputBorder(
@@ -240,7 +246,8 @@ class _VerifyResetCodeScreenState extends State<VerifyResetCodeScreen> {
                                               16,
                                             ),
                                             borderSide: BorderSide(
-                                              color: Colors.white.withOpacity(
+                                              color: Colors.white.withValues(
+                                                alpha:
                                                 0.25,
                                               ),
                                             ),
@@ -250,7 +257,8 @@ class _VerifyResetCodeScreenState extends State<VerifyResetCodeScreen> {
                                               16,
                                             ),
                                             borderSide: BorderSide(
-                                              color: Colors.white.withOpacity(
+                                              color: Colors.white.withValues(
+                                                alpha:
                                                 0.6,
                                               ),
                                               width: 1.5,
@@ -298,7 +306,8 @@ class _VerifyResetCodeScreenState extends State<VerifyResetCodeScreen> {
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(
+                                              color: Colors.black.withValues(
+                                                alpha:
                                                 0.3,
                                               ),
                                               offset: const Offset(0, 4),

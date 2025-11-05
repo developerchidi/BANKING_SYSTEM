@@ -69,7 +69,7 @@ class ThemeProvider extends ChangeNotifier {
       _isDarkMode ? FintechTheme.textLight : FintechTheme.textPrimary;
 
   Color get textSecondaryColor => _isDarkMode
-      ? FintechTheme.textLight.withOpacity(0.7)
+      ? FintechTheme.textLight.withValues(alpha: 0.7)
       : FintechTheme.textSecondary;
 
   // Get current card decoration

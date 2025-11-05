@@ -153,7 +153,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                   child: SizedBox(
                     width: double.infinity,
                     child: LinearProgressIndicator(
-                      backgroundColor: Colors.white.withOpacity(0.1),
+                      backgroundColor: Colors.white.withValues(alpha: 0.1),
                       valueColor: AlwaysStoppedAnimation<Color>(
                         const Color(0xFFA855F7),
                       ),

@@ -470,7 +470,7 @@ class _CardDetailSheetState extends State<_CardDetailSheet> {
                       end: Alignment.bottomRight,
                       colors: [
                         themeProvider.surfaceColor,
-                        themeProvider.surfaceColor.withOpacity(0.8),
+                        themeProvider.surfaceColor.withValues(alpha: 0.8),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -680,7 +680,7 @@ class _CardDetailSheetState extends State<_CardDetailSheet> {
                 style: TextStyle(
                   color: limit != null
                       ? themeProvider.textPrimaryColor
-                      : themeProvider.textSecondaryColor.withOpacity(0.6),
+                      : themeProvider.textSecondaryColor.withValues(alpha: 0.6),
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),

@@ -85,13 +85,16 @@ class _KYCStorageInfoScreenState extends State<KYCStorageInfoScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              const Color(0xFFA855F7).withOpacity(0.1),
-                              const Color(0xFF7C3AED).withOpacity(0.05),
+                              const Color(0xFFA855F7).withValues(
+                                                alpha:0.1),
+                              const Color(0xFF7C3AED).withValues(
+                                                alpha:0.05),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: const Color(0xFFA855F7).withOpacity(0.3),
+                            color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.3),
                             width: 1,
                           ),
                         ),
@@ -103,7 +106,8 @@ class _KYCStorageInfoScreenState extends State<KYCStorageInfoScreen> {
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFA855F7).withOpacity(0.2),
+                                    color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Icon(
@@ -152,13 +156,16 @@ class _KYCStorageInfoScreenState extends State<KYCStorageInfoScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              const Color(0xFF27AE60).withOpacity(0.1),
-                              const Color(0xFF2ECC71).withOpacity(0.05),
+                              const Color(0xFF27AE60).withValues(
+                                                alpha:0.1),
+                              const Color(0xFF2ECC71).withValues(
+                                                alpha:0.05),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: const Color(0xFF27AE60).withOpacity(0.3),
+                            color: const Color(0xFF27AE60).withValues(
+                                                alpha:0.3),
                             width: 1,
                           ),
                         ),
@@ -170,7 +177,8 @@ class _KYCStorageInfoScreenState extends State<KYCStorageInfoScreen> {
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF27AE60).withOpacity(0.2),
+                                    color: const Color(0xFF27AE60).withValues(
+                                                alpha:0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Icon(
@@ -194,10 +202,12 @@ class _KYCStorageInfoScreenState extends State<KYCStorageInfoScreen> {
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(
+                                                alpha:0.3),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.1),
+                                  color: Colors.white.withValues(
+                                                alpha:0.1),
                                   width: 1,
                                 ),
                               ),
@@ -237,13 +247,16 @@ class _KYCStorageInfoScreenState extends State<KYCStorageInfoScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              const Color(0xFFE74C3C).withOpacity(0.1),
-                              const Color(0xFFC0392B).withOpacity(0.05),
+                              const Color(0xFFE74C3C).withValues(
+                                                alpha:0.1),
+                              const Color(0xFFC0392B).withValues(
+                                                alpha:0.05),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: const Color(0xFFE74C3C).withOpacity(0.3),
+                            color: const Color(0xFFE74C3C).withValues(
+                                                alpha:0.3),
                             width: 1,
                           ),
                         ),
@@ -255,7 +268,8 @@ class _KYCStorageInfoScreenState extends State<KYCStorageInfoScreen> {
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFE74C3C).withOpacity(0.2),
+                                    color: const Color(0xFFE74C3C).withValues(
+                                                alpha:0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Icon(

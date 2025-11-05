@@ -25,7 +25,8 @@ class InfoDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFA855F7).withOpacity(0.08),
+                color: const Color(0xFFA855F7).withValues(
+                                                alpha:0.08),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12),
                 ),

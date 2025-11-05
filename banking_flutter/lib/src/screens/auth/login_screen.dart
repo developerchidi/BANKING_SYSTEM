@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 200,
                   height: 200,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFA855F7).withOpacity(0.2),
+                    color: const Color(0xFFA855F7).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(1000),
                   ),
                 ),
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 150,
                   height: 150,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFBBF24).withOpacity(0.2),
+                    color: const Color(0xFFFBBF24).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(1000),
                   ),
                 ),
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 180,
                   height: 180,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEC4899).withOpacity(0.2),
+                    color: const Color(0xFFEC4899).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(1000),
                   ),
                 ),
@@ -221,12 +221,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             constraints: BoxConstraints(maxWidth: formMaxWidth),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.06),
+                                color: Colors.white.withValues(alpha: 0.06),
                                 borderRadius: BorderRadius.circular(
                                   isSmall ? 10 : 12,
                                 ),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.08),
+                                  color: Colors.white.withValues(alpha: 0.08),
                                 ),
                               ),
                               child: Padding(
@@ -241,14 +241,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                           decoration: BoxDecoration(
                                             color: const Color(
                                               0xFFFCA5A5,
-                                            ).withOpacity(0.1),
+                                            ).withValues(alpha: 0.1),
                                             borderRadius: BorderRadius.circular(
                                               8,
                                             ),
                                             border: Border.all(
                                               color: const Color(
                                                 0xFFFCA5A5,
-                                              ).withOpacity(0.3),
+                                              ).withValues(alpha: 0.3),
                                             ),
                                           ),
                                           child: Row(
@@ -464,8 +464,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(
-                                                0.3,
+                                              color: Colors.black.withValues(
+                                                alpha: 0.3,
                                               ),
                                               offset: const Offset(0, 4),
                                               blurRadius: 8,
@@ -676,7 +676,7 @@ class _FeatureItem extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Icon(icon, size: 16, color: color),
