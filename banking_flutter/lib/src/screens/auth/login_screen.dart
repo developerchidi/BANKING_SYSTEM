@@ -529,12 +529,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                                           user.toString(),
                                                         );
                                                       }
-                                                      // Navigate directly to main app
-                                                      Navigator.of(
-                                                        context,
-                                                      ).pushReplacementNamed(
-                                                        '/app',
-                                                      );
+                                                      // Navigate to loading screen first, then to main app
+                                                      if (mounted) {
+                                                        Navigator.of(
+                                                          context,
+                                                        ).pushReplacementNamed(
+                                                          '/loading',
+                                                        );
+                                                      }
                                                     }
                                                   }
                                                 },

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../../services/card_service.dart';
 import 'package:flutter/services.dart';
 import '../../services/banking_service.dart';
@@ -101,6 +103,41 @@ class _CardsListScreenState extends State<CardsListScreen> {
   void initState() {
     super.initState();
     _future = CardService.fetchMyCards();
+    _updateThemeFromUserData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update theme provider when screen becomes active
+    _updateThemeFromUserData();
+  }
+
+  // Update theme provider with user tier from SharedPreferences
+  Future<void> _updateThemeFromUserData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+      if (userJson != null && userJson.isNotEmpty) {
+        try {
+          final userData = jsonDecode(userJson);
+          if (mounted) {
+            final themeProvider = Provider.of<ThemeProvider>(
+              context,
+              listen: false,
+            );
+            themeProvider.updateUserTierFromUserData(userData);
+            print(
+              '🎨 Cards: Updated theme provider with tier: ${userData['accountTier']}',
+            );
+          }
+        } catch (e) {
+          print('🎨 Cards: Error updating theme: $e');
+        }
+      }
+    } catch (e) {
+      print('🎨 Cards: Error reading user data for theme: $e');
+    }
   }
 
   @override

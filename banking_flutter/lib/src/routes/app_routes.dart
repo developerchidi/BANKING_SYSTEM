@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/two_factor_screen.dart';
 import '../screens/auth/registration_screen.dart';
+import '../screens/auth/loading_screen.dart';
 import 'main_tabs.dart';
 import '../screens/transaction/transactions_screen.dart';
 import '../screens/kyc/kyc_capture_screen.dart';
@@ -29,6 +30,7 @@ Map<String, WidgetBuilder> buildAppRoutes() => {
     }
     return TwoFactorScreen(studentId: studentId);
   },
+  '/loading': (context) => const LoadingScreen(),
   '/app': (context) => const MainTabsScreen(),
   '/transaction': (context) {
     return const TransactionsScreen();

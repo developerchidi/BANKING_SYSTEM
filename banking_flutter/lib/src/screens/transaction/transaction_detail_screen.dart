@@ -43,17 +43,36 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   }
 
   bool _isCreditForMe(BankTransaction t) {
-    if (_myAccountIds.isEmpty) return t.receiverAccountId != t.senderAccountId;
+    // Use the same logic as transactions_screen for consistency
+    if (_myAccountIds.isEmpty) {
+      // If no accounts loaded, use fallback logic
+      return t.receiverAccountId != t.senderAccountId;
+    }
+
+    // Check receiver account ID first
     if (t.receiverAccountId != null &&
-        _myAccountIds.contains(t.receiverAccountId!))
-      return true;
-    if (t.senderAccountId != null && _myAccountIds.contains(t.senderAccountId!))
-      return false;
+        _myAccountIds.contains(t.receiverAccountId!)) {
+      return true; // Money coming to my account = credit
+    }
+
+    // Check sender account ID
+    if (t.senderAccountId != null &&
+        _myAccountIds.contains(t.senderAccountId!)) {
+      return false; // Money going from my account = debit
+    }
+
+    // Fallback: check account objects
     if (t.receiverAccount != null &&
-        _myAccountIds.contains(t.receiverAccount!.id))
-      return true;
-    if (t.senderAccount != null && _myAccountIds.contains(t.senderAccount!.id))
-      return false;
+        _myAccountIds.contains(t.receiverAccount!.id)) {
+      return true; // Money coming to my account = credit
+    }
+
+    if (t.senderAccount != null &&
+        _myAccountIds.contains(t.senderAccount!.id)) {
+      return false; // Money going from my account = debit
+    }
+
+    // Default: treat TRANSFER as debit to be conservative (same as transactions_screen)
     return false;
   }
 
@@ -234,6 +253,32 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final t = widget.transaction;
+
+    // Wait for accounts to load before determining credit/debit
+    if (_loadingAccounts) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF8FAFC),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          title: Text(
+            'Chi tiết giao dịch',
+            style: GoogleFonts.inter(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF1F2937),
+            ),
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF1F2937)),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final isCredit = _isCreditForMe(t);
     final displayAmount = t.amount;
     final amountColor = isCredit

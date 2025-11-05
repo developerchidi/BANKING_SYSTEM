@@ -110,8 +110,38 @@ class _TransferScreenState extends State<TransferScreen>
     super.dispose();
   }
 
+  // Update theme provider with user tier from SharedPreferences
+  Future<void> _updateThemeFromUserData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+      if (userJson != null && userJson.isNotEmpty) {
+        try {
+          final userData = jsonDecode(userJson);
+          if (mounted) {
+            final themeProvider = Provider.of<ThemeProvider>(
+              context,
+              listen: false,
+            );
+            themeProvider.updateUserTierFromUserData(userData);
+            print(
+              '🎨 Transfer: Updated theme provider with tier: ${userData['accountTier']}',
+            );
+          }
+        } catch (e) {
+          print('🎨 Transfer: Error updating theme: $e');
+        }
+      }
+    } catch (e) {
+      print('🎨 Transfer: Error reading user data for theme: $e');
+    }
+  }
+
   Future<void> _loadData() async {
     try {
+      // Update theme provider with user tier
+      _updateThemeFromUserData();
+
       // If user has not set transaction PIN, force set before proceeding
       try {
         final has = await SecurityService(ApiClient()).hasPin();

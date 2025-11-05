@@ -148,6 +148,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     print('📱 Dashboard: initState called');
     _loadData();
     _loadUnreadNotificationCount();
+    _updateThemeFromUserData(); // Update theme provider with user tier
 
     // Listen to notification stream for realtime updates
     final notificationService = NotificationService();
@@ -221,6 +222,9 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Update theme provider when screen becomes active
+    _updateThemeFromUserData();
+    
     if (mounted && !_isCacheValid()) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _refreshData();
@@ -395,6 +399,36 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     return 'BASIC';
   }
 
+  // Update theme provider with user tier from SharedPreferences
+  Future<void> _updateThemeFromUserData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+      if (userJson != null && userJson.isNotEmpty) {
+        try {
+          final userData = jsonDecode(userJson);
+          if (mounted) {
+            final themeProvider = Provider.of<ThemeProvider>(
+              context,
+              listen: false,
+            );
+            themeProvider.updateUserTierFromUserData(userData);
+            print(
+              '🎨 Dashboard: Updated theme provider with tier: ${userData['accountTier']}',
+            );
+            print(
+              '🎨 Dashboard: Primary color: ${themeProvider.primaryColor}',
+            );
+          }
+        } catch (e) {
+          print('🎨 Dashboard: Error updating theme: $e');
+        }
+      }
+    } catch (e) {
+      print('🎨 Dashboard: Error reading user data for theme: $e');
+    }
+  }
+
   Map<String, dynamic> _getTierInfo(String tier, ThemeProvider themeProvider) {
     switch (tier.toUpperCase()) {
       case 'STANDARD':
@@ -473,6 +507,18 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
         // Update local storage with fresh data
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user', jsonEncode(userData));
+
+        // Update theme provider with fresh user data
+        if (mounted) {
+          final themeProvider = Provider.of<ThemeProvider>(
+            context,
+            listen: false,
+          );
+          themeProvider.updateUserTierFromUserData(userData);
+          print(
+            '🎨 Dashboard: Updated theme provider from server with tier: ${userData['accountTier']}',
+          );
+        }
 
         return userData['isKycVerified'] == true;
       } else {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'src/providers/auth_provider.dart';
 import 'src/services/auth_service.dart';
 import 'src/services/http_client.dart';
@@ -100,32 +102,88 @@ class BankingApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: MaterialApp(
-        title: 'Banking System',
-        theme: AppTheme.light(),
-        debugShowCheckedModeBanner: false,
-        locale: const Locale('vi'),
-        supportedLocales: const [Locale('vi'), Locale('en')],
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        builder: (context, child) {
-          final mq = MediaQuery.of(context);
-          // Chống vỡ layout khi người dùng đặt cỡ chữ/quy mô hiển thị lớn
-          final clampedTextScale = mq.textScaleFactor.clamp(0.9, 1.15);
-          final clampedScale = mq.devicePixelRatio;
-          return MediaQuery(
-            data: mq.copyWith(
-              textScaleFactor: clampedTextScale,
-              devicePixelRatio: clampedScale,
+      child: Builder(
+        builder: (context) {
+          return _ThemeInitializer(
+            child: MaterialApp(
+              title: 'Banking System',
+              theme: AppTheme.light(),
+              debugShowCheckedModeBanner: false,
+              locale: const Locale('vi'),
+              supportedLocales: const [Locale('vi'), Locale('en')],
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              routes: buildAppRoutes(),
             ),
-            child: child ?? const SizedBox.shrink(),
           );
         },
-        routes: buildAppRoutes(),
       ),
+    );
+  }
+}
+
+// Widget để khởi tạo theme provider với user data khi app khởi động
+class _ThemeInitializer extends StatefulWidget {
+  const _ThemeInitializer({required this.child});
+  
+  final Widget child;
+
+  @override
+  State<_ThemeInitializer> createState() => _ThemeInitializerState();
+}
+
+class _ThemeInitializerState extends State<_ThemeInitializer> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeTheme();
+  }
+
+  Future<void> _initializeTheme() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+      if (userJson != null && userJson.isNotEmpty) {
+        try {
+          final userData = jsonDecode(userJson);
+          if (mounted) {
+            final themeProvider = Provider.of<ThemeProvider>(
+              context,
+              listen: false,
+            );
+            themeProvider.updateUserTierFromUserData(userData);
+            print(
+              '🎨 Main: Initialized theme provider with tier: ${userData['accountTier']}',
+            );
+          }
+        } catch (e) {
+          print('🎨 Main: Error parsing user data for theme: $e');
+        }
+      }
+    } catch (e) {
+      print('🎨 Main: Error initializing theme: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        final mq = MediaQuery.of(context);
+        // Chống vỡ layout khi người dùng đặt cỡ chữ/quy mô hiển thị lớn
+        final clampedTextScale = mq.textScaleFactor.clamp(0.9, 1.15);
+        final clampedScale = mq.devicePixelRatio;
+        return MediaQuery(
+          data: mq.copyWith(
+            textScaleFactor: clampedTextScale,
+            devicePixelRatio: clampedScale,
+          ),
+          child: widget.child,
+        );
+      },
     );
   }
 }

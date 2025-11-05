@@ -220,8 +220,10 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
         );
       }
       
-      // Navigate directly to main app
-      Navigator.of(context).pushReplacementNamed('/app');
+      // Navigate to loading screen first, then to main app
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/loading');
+      }
     } catch (e) {
       setState(() {
         _error = e.toString();

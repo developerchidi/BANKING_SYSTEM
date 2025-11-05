@@ -5,6 +5,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/account.dart';
 import '../../services/qr_save_service.dart';
 import '../../theme/theme_provider.dart';
@@ -27,6 +28,41 @@ class _AccountQRScreenState extends State<AccountQRScreen> {
   void initState() {
     super.initState();
     _generateQRData();
+    _updateThemeFromUserData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update theme provider when screen becomes active
+    _updateThemeFromUserData();
+  }
+
+  // Update theme provider with user tier from SharedPreferences
+  Future<void> _updateThemeFromUserData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+      if (userJson != null && userJson.isNotEmpty) {
+        try {
+          final userData = jsonDecode(userJson);
+          if (mounted) {
+            final themeProvider = Provider.of<ThemeProvider>(
+              context,
+              listen: false,
+            );
+            themeProvider.updateUserTierFromUserData(userData);
+            print(
+              '🎨 QR: Updated theme provider with tier: ${userData['accountTier']}',
+            );
+          }
+        } catch (e) {
+          print('🎨 QR: Error updating theme: $e');
+        }
+      }
+    } catch (e) {
+      print('🎨 QR: Error reading user data for theme: $e');
+    }
   }
 
   void _generateQRData() {
