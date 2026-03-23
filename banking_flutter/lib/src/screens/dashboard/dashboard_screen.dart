@@ -224,7 +224,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     super.didChangeDependencies();
     // Update theme provider when screen becomes active
     _updateThemeFromUserData();
-    
+
     if (mounted && !_isCacheValid()) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _refreshData();
@@ -416,9 +416,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
             print(
               '🎨 Dashboard: Updated theme provider with tier: ${userData['accountTier']}',
             );
-            print(
-              '🎨 Dashboard: Primary color: ${themeProvider.primaryColor}',
-            );
+            print('🎨 Dashboard: Primary color: ${themeProvider.primaryColor}');
           }
         } catch (e) {
           print('🎨 Dashboard: Error updating theme: $e');
@@ -637,7 +635,9 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: themeProvider.primaryColor.withValues(alpha: 0.1),
+                backgroundColor: themeProvider.primaryColor.withValues(
+                  alpha: 0.1,
+                ),
                 child: Icon(
                   Ionicons.person_outline,
                   color: themeProvider.primaryColor,
@@ -878,7 +878,9 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: themeProvider.primaryColor.withValues(alpha: 0.2),
+                        color: themeProvider.primaryColor.withValues(
+                          alpha: 0.2,
+                        ),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -904,12 +906,16 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                         decoration: BoxDecoration(
                           color: isDisabled
                               ? Colors.grey.withValues(alpha: 0.1)
-                              : themeProvider.primaryColor.withValues(alpha: 0.1),
+                              : themeProvider.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: isDisabled
                                 ? Colors.grey.withValues(alpha: 0.3)
-                                : themeProvider.primaryColor.withValues(alpha: 0.3),
+                                : themeProvider.primaryColor.withValues(
+                                    alpha: 0.3,
+                                  ),
                             width: 1,
                           ),
                         ),

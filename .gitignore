@@ -82,3 +82,10 @@ secrets/
 .flutter-plugins-dependencies
 .packages
 *.iml
+
+# Ignore unrelated markdown files
+backend/RENDER_ENV_VARS_GUIDE.md
+backend/RENDER_QUICK_START.md
+backend/DEPLOY_RENDER.md
+backend/ACCOUNT_MIGRATION_GUIDE.md
+banking_flutter/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md
