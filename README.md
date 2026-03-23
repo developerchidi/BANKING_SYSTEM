@@ -1,4 +1,4 @@
-# 🏦 CHIDI BANK - Digital Banking System
+# CHIDI BANK - Digital Banking System
 
 <div align="center">
 
@@ -9,13 +9,13 @@
 
 **A comprehensive, production-ready digital banking system with mobile, web admin, and backend API**
 
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [Documentation](#-documentation)
+[Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Documentation](#documentation)
 
 </div>
 
 ---
 
-## 📖 Overview
+## Overview
 
 **CHIDI BANK** is a modern, enterprise-grade digital banking platform designed to provide a complete financial management solution. The system consists of three main components:
 
@@ -27,9 +27,9 @@ The platform supports comprehensive banking operations including account managem
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔐 Authentication & Security
+### Authentication & Security
 - **Multi-factor Authentication** - Email/SMS/App-based 2FA
 - **JWT Token Management** - Access & Refresh tokens with automatic renewal
 - **Role-Based Access Control (RBAC)** - Fine-grained permissions system
@@ -37,7 +37,7 @@ The platform supports comprehensive banking operations including account managem
 - **Session Management** - Secure session handling with device tracking
 - **Transaction PIN** - Additional security layer for financial operations
 
-### 💰 Account Management
+### Account Management
 - **Multiple Account Types** - CHECKING, SAVINGS, BUSINESS accounts
 - **Account Tiers** - BASIC, STANDARD, PREMIUM, VIP with different benefits
 - **Real-time Balance** - Live balance updates via WebSocket
@@ -45,7 +45,7 @@ The platform supports comprehensive banking operations including account managem
 - **Account Limits** - Configurable transaction and daily limits
 - **Vanity Account Numbers** - Custom account number selection
 
-### 💳 Transaction System
+### Transaction System
 - **Internal Transfers** - Instant transfers within the bank
 - **External Transfers** - Inter-bank transfers
 - **QR Code Payments** - Scan and pay functionality
@@ -53,20 +53,20 @@ The platform supports comprehensive banking operations including account managem
 - **Recurring Payments** - Scheduled automatic payments
 - **Transaction History** - Comprehensive transaction logs with search
 
-### 🎫 Card Management
+### Card Management
 - **Virtual Cards** - Debit and Credit card issuance
 - **Card Activation** - Secure card activation process
 - **PIN Management** - Card PIN setup and reset
 - **Spending Limits** - Daily and monthly spending controls
 - **Card Controls** - Lock/unlock cards remotely
 
-### 📈 Savings & Interest
+### Savings & Interest
 - **Savings Accounts** - Flexible and term deposits (3/6/12/24 months)
 - **Automatic Interest Calculation** - Daily/monthly interest accrual
 - **Compound Interest** - Automated interest compounding
 - **Interest Reports** - Detailed interest history
 
-### 📱 Mobile App Features
+### Mobile App Features
 - **Dark/Light Theme** - Customizable UI themes
 - **Biometric Authentication** - Face ID / Fingerprint login
 - **Push Notifications** - Real-time transaction alerts
@@ -74,7 +74,7 @@ The platform supports comprehensive banking operations including account managem
 - **Camera Integration** - Document scanning for KYC
 - **Offline Support** - Cached data for offline viewing
 
-### 🛠️ Admin Panel
+### Admin Panel
 - **User Management** - Complete user CRUD operations
 - **KYC Management** - Review and approve KYC submissions
 - **Transaction Monitoring** - View and manage all transactions
@@ -84,7 +84,7 @@ The platform supports comprehensive banking operations including account managem
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 - **Runtime**: Node.js (v18+)
@@ -122,9 +122,9 @@ The platform supports comprehensive banking operations including account managem
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
-```
+```text
 Banking-System/
 ├── backend/                 # Backend API Server
 │   ├── src/
@@ -162,7 +162,7 @@ Banking-System/
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### Prerequisites
 
@@ -267,7 +267,7 @@ Banking-System/
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -309,10 +309,10 @@ Update the base URL in:
 
 ---
 
-## 📚 API Documentation
+## API Documentation
 
 ### Base URL
-```
+```text
 http://localhost:3001/api/v1
 ```
 
@@ -358,7 +358,7 @@ For complete API documentation, see [API Documentation](./backend/docs/API_DOCUM
 
 ---
 
-## 🔒 Security Features
+## Security Features
 
 - **Password Hashing**: bcrypt with configurable rounds
 - **JWT Tokens**: Secure token-based authentication
@@ -372,7 +372,7 @@ For complete API documentation, see [API Documentation](./backend/docs/API_DOCUM
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Backend
 ```bash
@@ -388,20 +388,12 @@ flutter test
 
 ---
 
-## 📱 Screenshots
-
-*Add screenshots of your application here*
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
+## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create your feature branch (`git checkout -b feature/FeatureName`)
+3. Commit your changes (`git commit -m 'Add FeatureName'`)
+4. Push to the branch (`git push origin feature/FeatureName`)
 5. Open a Pull Request
 
 ### Code Style
@@ -412,33 +404,13 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👥 Authors
-
-- **Developer Chidi** - [@developerchidi](https://github.com/developerchidi)
-
----
-
-## 🙏 Acknowledgments
-
-- Flutter team for the amazing framework
-- Express.js community
-- All contributors and users of this project
-
----
-
-## 📞 Support
-
-For support, email nguyenchidi.dev@gmail.com or create an issue in this repository.
-
----
-
-## 🔮 Roadmap
+## Roadmap
 
 - [ ] Multi-currency support
 - [ ] International transfers
@@ -448,14 +420,3 @@ For support, email nguyenchidi.dev@gmail.com or create an issue in this reposito
 - [ ] Advanced analytics dashboard
 - [ ] API rate limiting dashboard
 - [ ] Webhook support
-
----
-
-<div align="center">
-
-**Made with ❤️ by CHIDI BANK Team**
-
-⭐ Star this repo if you find it helpful!
-
-</div>
-
