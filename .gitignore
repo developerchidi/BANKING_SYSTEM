@@ -5,6 +5,7 @@
 !backend/
 !banking_admin/
 !banking_flutter/
+!banking_core_java/
 !.gitignore
 !README.md
 !LICENSE
@@ -13,6 +14,7 @@
 !backend/**
 !banking_admin/**
 !banking_flutter/**
+!banking_core_java/**
 
 # But ignore .git in banking_flutter (if it's a submodule)
 banking_flutter/.git/
