@@ -30,7 +30,7 @@ class NotificationApiService {
           ? ''
           : '?${queryParams.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&')}';
 
-      final response = await _apiClient.get('/api/notifications$queryString');
+      final response = await _apiClient.get('${ApiConfig.notifications}$queryString');
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
       if (response.statusCode == 200 && data['success'] == true) {
@@ -47,7 +47,7 @@ class NotificationApiService {
   // Lấy chi tiết thông báo
   Future<Map<String, dynamic>> getNotificationById(String id) async {
     try {
-      final response = await _apiClient.get('/api/notifications/$id');
+      final response = await _apiClient.get('${ApiConfig.notifications}/$id');
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
       if (response.statusCode == 200 && data['success'] == true) {
@@ -65,7 +65,7 @@ class NotificationApiService {
   Future<void> markAsRead(String id) async {
     try {
       final response = await _apiClient.put(
-        '/api/notifications/$id/read',
+        '${ApiConfig.notifications}/$id/read',
         body: {},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -83,7 +83,7 @@ class NotificationApiService {
   Future<Map<String, dynamic>> markAllAsRead() async {
     try {
       final response = await _apiClient.put(
-        '/api/notifications/read-all',
+        '${ApiConfig.notifications}/read-all',
         body: {},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -102,7 +102,7 @@ class NotificationApiService {
   // Xóa thông báo
   Future<void> deleteNotification(String id) async {
     try {
-      final response = await _apiClient.delete('/api/notifications/$id');
+      final response = await _apiClient.delete('${ApiConfig.notifications}/$id');
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
       if (response.statusCode != 200 || data['success'] != true) {
@@ -117,7 +117,7 @@ class NotificationApiService {
   // Lấy số thông báo chưa đọc
   Future<int> getUnreadCount() async {
     try {
-      final response = await _apiClient.get('/api/notifications/unread-count');
+      final response = await _apiClient.get('${ApiConfig.notifications}/unread-count');
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
       if (response.statusCode == 200 && data['success'] == true) {
@@ -145,7 +145,7 @@ class NotificationApiService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/api/notifications',
+        ApiConfig.notifications,
         body: {
           'title': title,
           'content': content,

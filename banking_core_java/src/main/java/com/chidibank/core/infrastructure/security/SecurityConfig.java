@@ -45,6 +45,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10); // Standard bcrypt 10 rounds matching Node.js backend
+        return new BCryptPasswordEncoder(12); // Matching Node.js backend rounds exactly
     }
 }

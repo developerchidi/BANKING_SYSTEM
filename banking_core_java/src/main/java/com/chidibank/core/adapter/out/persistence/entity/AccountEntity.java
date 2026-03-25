@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "accounts")
@@ -19,44 +20,75 @@ public class AccountEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "account_number", unique = true, nullable = false)
+    @Column(name = "accountNumber", unique = true, nullable = false)
     private String accountNumber;
 
-    @Column(name = "account_type", nullable = false)
+    @Column(name = "accountType", nullable = false)
     private String accountType;
 
-    @Column(name = "account_name", nullable = false)
+    @Column(name = "accountName", nullable = false)
     private String accountName;
 
-    @Column(nullable = false)
+    @Column(name = "currency", nullable = false)
     @Builder.Default
     private String currency = "VND";
 
-    @Column(nullable = false)
+    @Column(name = "balance", nullable = false)
     @Builder.Default
     private Double balance = 0.0;
 
-    @Column(name = "available_balance", nullable = false)
+    @Column(name = "availableBalance", nullable = false)
     @Builder.Default
     private Double availableBalance = 0.0;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "isActive", nullable = false)
     @Builder.Default
     private boolean isActive = true;
 
-    @Column(name = "is_frozen", nullable = false)
+    @Column(name = "isFrozen", nullable = false)
     @Builder.Default
     private boolean isFrozen = false;
 
+    @Column(name = "dailyLimit")
+    private Double dailyLimit;
+
+    @Column(name = "monthlyLimit")
+    private Double monthlyLimit;
+
+    @Column(name = "interestRate")
+    private Double interestRate;
+
+    @Column(name = "lastInterestDate")
+    private LocalDateTime lastInterestDate;
+
+    // Relationships
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private UserEntity user;
 
+    @OneToMany(mappedBy = "senderAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TransactionEntity> sentTransactions;
+
+    @OneToMany(mappedBy = "receiverAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TransactionEntity> receivedTransactions;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CardEntity> cards;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<LoanEntity> loans;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BeneficiaryEntity> beneficiaries;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<InterestEntity> interests;
+
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "createdAt", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 }

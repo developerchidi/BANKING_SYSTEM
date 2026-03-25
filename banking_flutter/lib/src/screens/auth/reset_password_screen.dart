@@ -242,7 +242,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       //     labelText: 'Mã xác nhận (6 số)',
                                       //     filled: true,
                                       //     fillColor: Colors.white.withValues(
-                                                alpha:
+                                                // alpha:
                                       //       0.08,
                                       //     ),
                                       //     border: OutlineInputBorder(
@@ -256,7 +256,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       //       ),
                                       //       borderSide: BorderSide(
                                       //         color: Colors.white.withValues(
-                                                alpha:
+                                                // alpha:
                                       //           0.25,
                                       //         ),
                                       //       ),
@@ -267,7 +267,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       //       ),
                                       //       borderSide: BorderSide(
                                       //         color: Colors.white.withValues(
-                                                alpha:
+                                                // alpha:
                                       //           0.6,
                                       //         ),
                                       //         width: 1.5,

@@ -2,14 +2,31 @@ spring:
   application:
     name: banking_core_java
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/banking_system}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://${DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      connection-test-query: SELECT 1
   jpa:
     hibernate:
       ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        globally_quoted_identifiers: true
+
+server:
+  port: ${PORT:3001}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRES_IN}
+  refresh-secret: ${JWT_REFRESH_SECRET}
+  refresh-expiration: ${JWT_REFRESH_EXPIRES_IN}

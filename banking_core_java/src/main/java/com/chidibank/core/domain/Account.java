@@ -16,6 +16,10 @@ public class Account {
     private double availableBalance;
     private boolean isActive;
     private boolean isFrozen;
+    private Double dailyLimit;
+    private Double monthlyLimit;
+    private Double interestRate;
+    private LocalDateTime lastInterestDate;
     private String userId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

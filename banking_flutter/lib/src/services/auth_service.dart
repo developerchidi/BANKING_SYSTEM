@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'http_client.dart';
 import 'token_expiration_service.dart';
+import '../config/api_config.dart';
 
 class AuthService {
   final ApiClient _apiClient;
@@ -37,7 +38,7 @@ class AuthService {
     print('🔐 AuthService: Attempting login for student ID: $studentId');
 
     final response = await _apiClient.post(
-      '/api/auth/login',
+      '${ApiConfig.auth}/login',
       body: {'studentId': studentId, 'password': password},
     );
 
@@ -92,7 +93,7 @@ class AuthService {
   Future<Map<String, dynamic>> verifyResetCode(String code) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/verify-reset-code',
+        '${ApiConfig.auth}/verify-reset-code',
         body: {'token': code},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -111,7 +112,7 @@ class AuthService {
   // Complete 2FA method for AuthProvider
   Future<Map<String, dynamic>> complete2FA(String userId, String code) async {
     final response = await _apiClient.post(
-      '/api/auth/2fa/complete-login',
+      '${ApiConfig.auth}/2fa/complete-login',
       body: {'userId': userId, 'code': code},
     );
 
@@ -149,7 +150,7 @@ class AuthService {
     }
 
     final response = await _apiClient.post(
-      '/api/auth/2fa/complete-login',
+      '${ApiConfig.auth}/2fa/complete-login',
       body: {'userId': userId, 'code': code},
     );
 
@@ -321,7 +322,7 @@ class AuthService {
   Future<Map<String, dynamic>> verifyEmail(String token) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/verify-email',
+        '${ApiConfig.auth}/verify-email',
         body: {'token': token},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -339,7 +340,7 @@ class AuthService {
 
   Future<Map<String, dynamic>> resendEmailVerification() async {
     try {
-      final response = await _apiClient.post('/api/auth/resend-verification');
+      final response = await _apiClient.post('${ApiConfig.auth}/resend-verification');
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       final success = response.statusCode == 200;
       return {
@@ -359,7 +360,7 @@ class AuthService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/change-email',
+        '${ApiConfig.auth}/change-email',
         body: {'newEmail': newEmail, 'password': password},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -379,7 +380,7 @@ class AuthService {
 
   Future<bool> isEmailAvailable(String email) async {
     try {
-      final res = await _apiClient.get('/api/auth/check-email?email=$email');
+      final res = await _apiClient.get('${ApiConfig.auth}/check-email?email=$email');
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         return data['exists'] == false;
@@ -431,7 +432,7 @@ class AuthService {
     try {
       print('🔐 AuthService: Attempting to refresh token');
       final response = await _apiClient.post(
-        '/api/auth/refresh',
+        '${ApiConfig.auth}/refresh',
         body: {'refreshToken': refreshToken},
       );
 
@@ -470,7 +471,7 @@ class AuthService {
 
     try {
       // Make a simple API call to test token
-      final response = await _apiClient.get('/api/auth/me');
+      final response = await _apiClient.get('${ApiConfig.auth}/me');
       print(
         '🔐 AuthService: Token test response status: ${response.statusCode}',
       );
@@ -493,7 +494,7 @@ class AuthService {
   // Get user profile
   Future<Map<String, dynamic>> getUserProfile() async {
     try {
-      final response = await _apiClient.get('/api/auth/me');
+      final response = await _apiClient.get('${ApiConfig.auth}/me');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         return {'success': true, 'data': data['data']};
@@ -511,7 +512,7 @@ class AuthService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/change-password',
+        '${ApiConfig.auth}/change-password',
         body: {'currentPassword': currentPassword, 'newPassword': newPassword},
       );
 
@@ -535,7 +536,7 @@ class AuthService {
   Future<Map<String, dynamic>> enableTwoFactor(String password) async {
     try {
       final response = await _apiClient.post(
-        '/api/2fa/enable',
+        '${ApiConfig.twoFA}/enable',
         body: {'password': password},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -556,7 +557,7 @@ class AuthService {
   Future<Map<String, dynamic>> disableTwoFactor(String password) async {
     try {
       final response = await _apiClient.post(
-        '/api/2fa/disable',
+        '${ApiConfig.twoFA}/disable',
         body: {'password': password},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -576,7 +577,7 @@ class AuthService {
   Future<Map<String, dynamic>> forgotPassword(String email) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/forgot-password',
+        '${ApiConfig.auth}/forgot-password',
         body: {'email': email},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -601,7 +602,7 @@ class AuthService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/reset-password',
+        '${ApiConfig.auth}/reset-password',
         body: {'token': token, 'newPassword': newPassword},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
