@@ -1,7 +1,7 @@
 class ApiConfig {
   // ===== CẤU HÌNH SERVER IP =====
   // Thay đổi IP này khi IP máy tính thay đổi
-  static const String serverIp = '192.168.1.7';
+  static const String serverIp = '127.0.0.1';
   static const int serverPort = 3002;
   // ===============================
 

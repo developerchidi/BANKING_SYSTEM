@@ -57,10 +57,46 @@ public class BankingController {
         return ResponseEntity.ok(Map.of("success", true, "data", data));
     }
 
+    @GetMapping("/transactions")
+    public ResponseEntity<?> getUserTransactions(
+            Authentication authentication,
+            @RequestParam Map<String, Object> allParams) {
+        String studentId = authentication.getName();
+        Map<String, Object> data = bankingUseCase.getUserTransactions(studentId, allParams);
+        return ResponseEntity.ok(Map.of("success", true, "data", data));
+    }
+
+    @GetMapping("/verify-account/{accountNumber}")
+    public ResponseEntity<?> verifyAccount(@PathVariable String accountNumber) {
+        Map<String, Object> data = bankingUseCase.verifyAccount(accountNumber);
+        return ResponseEntity.ok(Map.of("success", true, "data", data));
+    }
+
+    @GetMapping("/dashboard/summary")
+    public ResponseEntity<?> getDashboardSummary(Authentication authentication) {
+        String studentId = authentication.getName();
+        Map<String, Object> data = bankingUseCase.getDashboardSummary(studentId);
+        return ResponseEntity.ok(Map.of("success", true, "data", data));
+    }
+
     @PostMapping("/transfer")
     public ResponseEntity<?> transfer(Authentication authentication, @RequestBody Map<String, Object> request) {
         String studentId = authentication.getName();
         Map<String, Object> response = bankingUseCase.transfer(studentId, request);
+        return ResponseEntity.ok(Map.of("success", true, "data", response));
+    }
+
+    @PostMapping("/transfer/verify-otp")
+    public ResponseEntity<?> verifyOtp(Authentication authentication, @RequestBody Map<String, Object> request) {
+        String studentId = authentication.getName();
+        Map<String, Object> response = bankingUseCase.verifyTransferOtp(studentId, request);
+        return ResponseEntity.ok(Map.of("success", true, "data", response));
+    }
+
+    @PostMapping("/transfer/resend-otp")
+    public ResponseEntity<?> resendOtp(Authentication authentication, @RequestBody Map<String, Object> request) {
+        String studentId = authentication.getName();
+        Map<String, Object> response = bankingUseCase.resendTransferOtp(studentId, request);
         return ResponseEntity.ok(Map.of("success", true, "data", response));
     }
 
