@@ -17,7 +17,9 @@ public class BeneficiaryEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private UserEntity user;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accountId")
     private AccountEntity account;
