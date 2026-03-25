@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/banking")
+@RequestMapping("/api/banking")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class BankingController {
@@ -22,7 +22,11 @@ public class BankingController {
     public ResponseEntity<?> getAccounts(Authentication authentication) {
         String studentId = authentication.getName();
         List<Map<String, Object>> accounts = bankingUseCase.getAccounts(studentId);
-        return ResponseEntity.ok(Map.of("success", true, "data", accounts));
+        return ResponseEntity.ok(Map.of(
+            "success", true,
+            "message", "Accounts retrieved successfully",
+            "data", Map.of("accounts", accounts)
+        ));
     }
 
     @GetMapping("/accounts/{accountId}")
@@ -111,6 +115,9 @@ public class BankingController {
     public ResponseEntity<?> getBeneficiaries(Authentication authentication) {
         String studentId = authentication.getName();
         List<Map<String, Object>> beneficiaries = bankingUseCase.getBeneficiaries(studentId);
-        return ResponseEntity.ok(Map.of("success", true, "data", beneficiaries));
+        return ResponseEntity.ok(Map.of(
+            "success", true,
+            "data", Map.of("beneficiaries", beneficiaries)
+        ));
     }
 }

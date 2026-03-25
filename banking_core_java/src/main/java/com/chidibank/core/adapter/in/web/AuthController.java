@@ -15,7 +15,7 @@ import java.util.Map;
 import com.chidibank.core.domain.User;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class AuthController {

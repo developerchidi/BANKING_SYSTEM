@@ -26,10 +26,13 @@ public class AuthResponse {
         private String email;
         private String firstName;
         private String lastName;
+        private String phone;
         private boolean isEmailVerified;
         private boolean isKycVerified;
         private String kycStatus;
         private boolean isActive;
+        private String accountTier;
+        private LocalDateTime dateOfBirth;
         private LocalDateTime createdAt;
     }
 }

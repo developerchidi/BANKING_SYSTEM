@@ -12,7 +12,7 @@ class ApiConfig {
   static String get wsUrl => 'ws://$serverIp:$serverPort/ws/notifications';
 
   // API Prefix
-  static const String apiPrefix = '/api/v1';
+  static const String apiPrefix = '/api';
 
   // API endpoints
   static const String auth = '$apiPrefix/auth';
