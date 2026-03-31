@@ -1,6 +1,7 @@
 package com.chidibank.core.adapter.in.web;
 
 import com.chidibank.core.adapter.in.web.dto.ApiResponse;
+import com.chidibank.core.adapter.in.web.dto.AuthActionDtos;
 import com.chidibank.core.adapter.in.web.dto.AuthRequest;
 import com.chidibank.core.adapter.in.web.dto.AuthResponse;
 import com.chidibank.core.adapter.in.web.dto.RegisterRequest;
@@ -17,7 +18,6 @@ import com.chidibank.core.domain.User;
 @RestController
 @RequestMapping({"/api/auth", "/api/v1/auth"})
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final AuthUseCase authUseCase;
@@ -59,17 +59,14 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        authUseCase.forgotPassword(email);
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody AuthActionDtos.ForgotPasswordRequest request) {
+        authUseCase.forgotPassword(request.getEmail());
         return ResponseEntity.ok().body(new ApiResponse(true, "Password reset code sent to your email"));
     }
 
     @PostMapping("/verify-reset-code")
-    public ResponseEntity<?> verifyResetCode(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        String token = request.get("token");
-        boolean isValid = authUseCase.verifyResetCode(email, token);
+    public ResponseEntity<?> verifyResetCode(@Valid @RequestBody AuthActionDtos.VerifyResetCodeRequest request) {
+        boolean isValid = authUseCase.verifyResetCode(request.getEmail(), request.getToken());
         if (isValid) {
             return ResponseEntity.ok().body(new ApiResponse(true, "Reset code verified successfully"));
         } else {
@@ -78,22 +75,17 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        String token = request.get("token");
-        String newPassword = request.get("newPassword");
-        authUseCase.resetPassword(email, token, newPassword);
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody AuthActionDtos.ResetPasswordRequest request) {
+        authUseCase.resetPassword(request.getEmail(), request.getToken(), request.getNewPassword());
         return ResponseEntity.ok().body(new ApiResponse(true, "Password has been reset successfully"));
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
             org.springframework.security.core.Authentication authentication,
-            @RequestBody Map<String, String> request) {
+            @Valid @RequestBody AuthActionDtos.ChangePasswordRequest request) {
         String studentId = authentication.getName();
-        String currentPassword = request.get("currentPassword");
-        String newPassword = request.get("newPassword");
-        authUseCase.changePassword(studentId, currentPassword, newPassword);
+        authUseCase.changePassword(studentId, request.getCurrentPassword(), request.getNewPassword());
         return ResponseEntity.ok().body(new ApiResponse(true, "Mật khẩu đã được đổi thành công"));
     }
 

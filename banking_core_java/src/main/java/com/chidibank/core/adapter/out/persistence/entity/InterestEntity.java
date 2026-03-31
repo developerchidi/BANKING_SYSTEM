@@ -42,6 +42,15 @@ public class InterestEntity {
     @Column()
     @Builder.Default
     private LocalDateTime calculationDate = LocalDateTime.now();
+    
+    @Column()
+    private LocalDateTime periodStart;
+    
+    @Column()
+    private LocalDateTime periodEnd;
+    
+    @Column()
+    private String status;
 
     @CreationTimestamp
     @Column(updatable = false)

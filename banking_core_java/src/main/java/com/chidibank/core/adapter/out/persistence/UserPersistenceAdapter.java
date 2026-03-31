@@ -6,9 +6,12 @@ import com.chidibank.core.application.port.out.UserPort;
 import com.chidibank.core.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -76,6 +79,31 @@ public class UserPersistenceAdapter implements UserPort {
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email).map(this::mapToDomain);
+    }
+
+    @Override
+    public List<User> findAll(int page, int limit) {
+        int normalizedPage = Math.max(page - 1, 0);
+        int normalizedLimit = Math.max(limit, 1);
+        return userRepository.findAll(PageRequest.of(normalizedPage, normalizedLimit))
+                .stream()
+                .map(this::mapToDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countAll() {
+        return userRepository.countAllUsers();
+    }
+
+    @Override
+    public long countActiveUsers() {
+        return userRepository.countByIsActiveTrue();
+    }
+
+    @Override
+    public long countPendingKyc() {
+        return userRepository.countByKycStatus("PENDING");
     }
 
     @Override

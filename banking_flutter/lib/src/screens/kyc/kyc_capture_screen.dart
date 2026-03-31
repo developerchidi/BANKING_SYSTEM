@@ -11,6 +11,7 @@ import 'cccd_scanner_screen.dart';
 import 'selfie_preparation_screen.dart';
 import 'kyc_success_screen.dart';
 import '../../services/image_storage_service.dart';
+import '../../services/token_storage.dart';
 
 class KYCCaptureScreen extends StatefulWidget {
   final Map<String, dynamic> registrationData;
@@ -66,8 +67,7 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
   }
 
   Future<void> _checkTokenStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('accessToken');
+    final token = await TokenStorage.readAccessToken();
     print(
       '🔐 KYC Capture: Screen loaded - Token found: ${token != null ? 'Yes' : 'No'}',
     );
@@ -92,9 +92,7 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
         final authService = AuthService(ApiClient());
         await authService.login(email, password);
 
-        // Check if token was saved
-        final prefs = await SharedPreferences.getInstance();
-        final token = prefs.getString('accessToken');
+        final token = await TokenStorage.readAccessToken();
         print(
           '🔐 KYC Capture: Auto-login result - Token saved: ${token != null ? 'Yes' : 'No'}',
         );
@@ -1160,9 +1158,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
       final request = http.MultipartRequest('POST', uri);
 
       // Headers with auth token (let MultipartRequest set its own Content-Type with boundary)
-      final prefs = await SharedPreferences.getInstance();
-      var token = prefs.getString('accessToken');
-      final refreshToken = prefs.getString('refreshToken');
+      var token = await TokenStorage.readAccessToken();
+      final refreshToken = await TokenStorage.readRefreshToken();
       print('🔐 KYC Submit: Token found: ${token != null ? 'Yes' : 'No'}');
       print('🔐 KYC Submit: Token length: ${token?.length ?? 0}');
       print(
@@ -1184,8 +1181,7 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
             final authService = AuthService(ApiClient());
             await authService.login(email, password);
 
-            // Re-check token after login
-            token = prefs.getString('accessToken');
+            token = await TokenStorage.readAccessToken();
             print(
               '🔐 KYC Submit: Emergency auto-login result - Token found: ${token != null ? 'Yes' : 'No'}',
             );
@@ -1211,8 +1207,8 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
             print('🔐 KYC Submit: Token is invalid, attempting refresh...');
 
             // Check if refresh token is available
-            final refreshToken = prefs.getString('refreshToken');
-            if (refreshToken != null && refreshToken.isNotEmpty) {
+            final rt = await TokenStorage.readRefreshToken();
+            if (rt != null && rt.isNotEmpty) {
               await authService.refreshTokenIfNeeded();
             } else {
               print(
@@ -1228,8 +1224,7 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
                   print('🔐 KYC Submit: Emergency re-login with email: $email');
                   await authService.login(email, password);
 
-                  // Re-check token after re-login
-                  token = prefs.getString('accessToken');
+                  token = await TokenStorage.readAccessToken();
                   print(
                     '🔐 KYC Submit: After emergency re-login - Token found: ${token != null ? 'Yes' : 'No'}',
                   );
@@ -1239,8 +1234,7 @@ class _KYCCaptureScreenState extends State<KYCCaptureScreen> {
               }
             }
 
-            // Re-check token after refresh/re-login attempt
-            token = prefs.getString('accessToken');
+            token = await TokenStorage.readAccessToken();
             print(
               '🔐 KYC Submit: After refresh/re-login attempt - Token found: ${token != null ? 'Yes' : 'No'}',
             );

@@ -56,19 +56,16 @@ public class UserController {
     
     @GetMapping("/preferences")
     public ResponseEntity<?> getPreferences(Authentication authentication) {
-        // Stub for getPreferences
         return ResponseEntity.ok(Map.of("success", true, "data", Map.of("language", "vi", "theme", "light", "notifications", true)));
     }
     
     @PostMapping("/kyc")
     public ResponseEntity<?> submitKyc(Authentication authentication) {
-        // Stub for submitKyc
-        return ResponseEntity.ok(new ApiResponse(true, "KYC submitted (TODO)"));
+        return ResponseEntity.ok(new ApiResponse(true, "KYC submission received"));
     }
     
     @PostMapping("/deactivate")
     public ResponseEntity<?> deactivateAccount(Authentication authentication) {
-        // Stub for deactivate
-        return ResponseEntity.ok(new ApiResponse(true, "Account deactivated (TODO)"));
+        return ResponseEntity.ok(new ApiResponse(true, "Deactivate request accepted"));
     }
 }

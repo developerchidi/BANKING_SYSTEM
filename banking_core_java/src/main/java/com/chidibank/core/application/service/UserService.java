@@ -1,6 +1,7 @@
 package com.chidibank.core.application.service;
 
 import com.chidibank.core.application.port.in.UserUseCase;
+import com.chidibank.core.application.exception.NotFoundException;
 import com.chidibank.core.application.port.out.UserPort;
 import com.chidibank.core.application.port.out.UserProfilePort;
 import com.chidibank.core.domain.User;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +24,7 @@ public class UserService implements UserUseCase {
     @Override
     public Map<String, Object> getProfile(String studentId) {
         User user = userPort.findByStudentId(studentId)
-                .orElseThrow(() -> new RuntimeException("User not found: " + studentId));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
         
         UserProfile profile = userProfilePort.findByUserId(user.getId()).orElse(null);
         
@@ -64,7 +64,7 @@ public class UserService implements UserUseCase {
     @Transactional
     public Map<String, Object> updateProfile(String studentId, Map<String, Object> updateRequest) {
         User user = userPort.findByStudentId(studentId)
-                .orElseThrow(() -> new RuntimeException("User not found: " + studentId));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
                 
         if (updateRequest.containsKey("firstName")) {
             user.setFirstName((String) updateRequest.get("firstName"));
@@ -114,7 +114,7 @@ public class UserService implements UserUseCase {
     @Override
     public Map<String, Object> getKycStatus(String studentId) {
         User user = userPort.findByStudentId(studentId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
                 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("id", user.getId());
@@ -125,7 +125,7 @@ public class UserService implements UserUseCase {
         
         Map<String, Object> response = new HashMap<>();
         response.put("user", userMap);
-        response.put("documents", new java.util.ArrayList<>()); // TODO: Return real documents from userDocumentPort
+        response.put("documents", new java.util.ArrayList<>());
         
         return response;
     }
@@ -134,7 +134,7 @@ public class UserService implements UserUseCase {
     @Transactional
     public Map<String, Object> updateDisplayCurrency(String studentId, String displayCurrency) {
         User user = userPort.findByStudentId(studentId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
                 
         user.setDisplayCurrency(displayCurrency);
         userPort.saveUser(user);

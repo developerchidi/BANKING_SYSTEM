@@ -75,13 +75,30 @@ public class AccountPersistenceAdapter implements AccountPort {
     }
 
     @Override
+    public Optional<Account> findByIdForUpdate(String id) {
+        return accountRepository.findWithLockById(id).map(this::mapToDomain);
+    }
+
+    @Override
     public Optional<Account> findByAccountNumber(String accountNumber) {
         return accountRepository.findByAccountNumber(accountNumber).map(this::mapToDomain);
     }
 
     @Override
+    public Optional<Account> findByAccountNumberForUpdate(String accountNumber) {
+        return accountRepository.findWithLockByAccountNumber(accountNumber).map(this::mapToDomain);
+    }
+
+    @Override
     public List<Account> findByUserId(String userId) {
         return accountRepository.findByUserId(userId).stream()
+                .map(this::mapToDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Account> findActiveSavingsAccounts() {
+        return accountRepository.findByAccountTypeAndIsActiveTrue("SAVINGS").stream()
                 .map(this::mapToDomain)
                 .collect(Collectors.toList());
     }

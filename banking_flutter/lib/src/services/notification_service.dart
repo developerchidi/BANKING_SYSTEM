@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/api_config.dart';
+import 'token_storage.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -131,27 +133,39 @@ class NotificationService {
   Future<void> _loadUserCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     _userId = prefs.getString('userId');
-    _accessToken = prefs.getString('accessToken');
+    if (_userId == null || _userId!.isEmpty) {
+      final userJson = prefs.getString('user');
+      if (userJson != null) {
+        try {
+          final m = jsonDecode(userJson) as Map<String, dynamic>;
+          _userId = m['id'] as String?;
+        } catch (_) {}
+      }
+    }
+    _accessToken = await TokenStorage.readAccessToken();
   }
 
   Future<void> connectToWebSocket() async {
     if (_userId == null || _accessToken == null) {
-      print('❌ Cannot connect to WebSocket: Missing user credentials');
-      print('   UserId: $_userId');
-      print('   AccessToken: ${_accessToken?.substring(0, 20)}...');
+      if (kDebugMode) {
+        debugPrint('WebSocket: missing credentials userId=${_userId != null} token=${_accessToken != null}');
+      }
       return;
     }
 
     // Check if already connected
     if (_channel != null && _subscription != null) {
-      print('⚠️ WebSocket already connected, skipping duplicate connection');
+      if (kDebugMode) {
+        debugPrint('WebSocket: already connected');
+      }
       return;
     }
 
     try {
       final wsUrl = '${ApiConfig.wsUrl}?userId=$_userId&token=$_accessToken';
-      print('🔌 Attempting to connect to WebSocket...');
-      print('   URL: $wsUrl');
+      if (kDebugMode) {
+        debugPrint('WebSocket: connecting to ${ApiConfig.wsUrl} (token hidden)');
+      }
 
       // Disconnect any existing connection first
       await disconnect();
@@ -744,14 +758,13 @@ class NotificationService {
     _userId = userId;
     _accessToken = accessToken;
 
-    // Save to SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userId', userId);
-    await prefs.setString('accessToken', accessToken);
-
-    print('🔐 Updated credentials:');
-    print('   UserId: $userId');
-    print('   AccessToken: ${accessToken.substring(0, 20)}...');
+    final refresh = await TokenStorage.readRefreshToken();
+    await TokenStorage.writeTokens(
+      accessToken: accessToken,
+      refreshToken: refresh,
+    );
 
     // Reconnect with new credentials
     await disconnect();

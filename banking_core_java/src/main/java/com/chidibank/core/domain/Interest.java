@@ -15,5 +15,8 @@ public class Interest {
     private Double interestAmount;
     private Double totalAmount;
     private LocalDateTime calculationDate;
+    private LocalDateTime periodStart;
+    private LocalDateTime periodEnd;
+    private String status;
     private LocalDateTime createdAt;
 }

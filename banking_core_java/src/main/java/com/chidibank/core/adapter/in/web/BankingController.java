@@ -1,7 +1,9 @@
 package com.chidibank.core.adapter.in.web;
 
 import com.chidibank.core.adapter.in.web.dto.ApiResponse;
+import com.chidibank.core.adapter.in.web.dto.BankingDtos;
 import com.chidibank.core.application.port.in.BankingUseCase;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequestMapping({"/api/banking", "/api/v1/banking"})
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class BankingController {
 
     private final BankingUseCase bankingUseCase;
@@ -37,16 +38,28 @@ public class BankingController {
     }
 
     @PostMapping("/accounts")
-    public ResponseEntity<?> createAccount(Authentication authentication, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<?> createAccount(
+            Authentication authentication,
+            @Valid @RequestBody BankingDtos.CreateAccountRequest request) {
         String studentId = authentication.getName();
-        Map<String, Object> account = bankingUseCase.createAccount(studentId, request);
+        Map<String, Object> account = bankingUseCase.createAccount(studentId, Map.of(
+                "accountType", request.getAccountType(),
+                "accountName", request.getAccountName(),
+                "currency", request.getCurrency()
+        ));
         return ResponseEntity.ok(Map.of("success", true, "data", account, "message", "Account created successfully"));
     }
 
     @PutMapping("/accounts/{accountId}/limits")
-    public ResponseEntity<?> updateAccountLimits(Authentication authentication, @PathVariable String accountId, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<?> updateAccountLimits(
+            Authentication authentication,
+            @PathVariable String accountId,
+            @Valid @RequestBody BankingDtos.UpdateAccountLimitsRequest request) {
         String studentId = authentication.getName();
-        bankingUseCase.updateAccountLimits(studentId, accountId, request);
+        bankingUseCase.updateAccountLimits(studentId, accountId, Map.of(
+                "dailyLimit", request.getDailyLimit(),
+                "monthlyLimit", request.getMonthlyLimit()
+        ));
         return ResponseEntity.ok(new ApiResponse(true, "Limits updated successfully"));
     }
 
@@ -84,31 +97,40 @@ public class BankingController {
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<?> transfer(Authentication authentication, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<?> transfer(
+            Authentication authentication,
+            @Valid @RequestBody BankingDtos.TransferRequest request) {
         String studentId = authentication.getName();
-        Map<String, Object> response = bankingUseCase.transfer(studentId, request);
+        Map<String, Object> response = bankingUseCase.transfer(studentId, Map.of(
+                "fromAccountId", request.getFromAccountId(),
+                "toAccountNumber", request.getToAccountNumber(),
+                "amount", request.getAmount(),
+                "description", request.getDescription()
+        ));
         return ResponseEntity.ok(Map.of("success", true, "data", response));
     }
 
     @PostMapping("/transfer/verify-otp")
-    public ResponseEntity<?> verifyOtp(Authentication authentication, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<?> verifyOtp(
+            Authentication authentication,
+            @Valid @RequestBody BankingDtos.TransferOtpRequest request) {
         String studentId = authentication.getName();
-        Map<String, Object> response = bankingUseCase.verifyTransferOtp(studentId, request);
+        Map<String, Object> response = bankingUseCase.verifyTransferOtp(studentId, Map.of(
+                "transactionId", request.getTransactionId(),
+                "otpCode", request.getOtpCode()
+        ));
         return ResponseEntity.ok(Map.of("success", true, "data", response));
     }
 
     @PostMapping("/transfer/resend-otp")
-    public ResponseEntity<?> resendOtp(Authentication authentication, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<?> resendOtp(
+            Authentication authentication,
+            @Valid @RequestBody BankingDtos.ResendTransferOtpRequest request) {
         String studentId = authentication.getName();
-        Map<String, Object> response = bankingUseCase.resendTransferOtp(studentId, request);
+        Map<String, Object> response = bankingUseCase.resendTransferOtp(studentId, Map.of(
+                "transactionId", request.getTransactionId()
+        ));
         return ResponseEntity.ok(Map.of("success", true, "data", response));
-    }
-
-    @GetMapping("/cards")
-    public ResponseEntity<?> getCards(Authentication authentication) {
-        String studentId = authentication.getName();
-        List<Map<String, Object>> cards = bankingUseCase.getCards(studentId);
-        return ResponseEntity.ok(Map.of("success", true, "data", cards));
     }
 
     @GetMapping("/beneficiaries")

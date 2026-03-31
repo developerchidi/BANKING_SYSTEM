@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -15,20 +16,25 @@ import 'src/theme/theme_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  print('🚀 Banking App: Starting application...');
+  if (kDebugMode) {
+    debugPrint('Banking App: starting');
+  }
 
   // Initialize notification service
   await NotificationService().initialize();
-  print('🔔 Banking App: Notification service initialized');
+  if (kDebugMode) {
+    debugPrint('Banking App: notifications initialized');
+  }
 
   // Initialize authentication service
   await AuthService.initialize();
-  print('🔐 Banking App: Authentication service initialized');
+  if (kDebugMode) {
+    debugPrint('Banking App: auth initialized');
+  }
 
   // Enable runtime fetching for Google Fonts (fonts will be downloaded if not in assets)
   // For production, consider bundling fonts in assets for better performance
   GoogleFonts.config.allowRuntimeFetching = true;
-  print('🎨 Banking App: Fonts configured (runtime fetching enabled)');
 
   // Set up error handling
   ErrorWidget.builder = (FlutterErrorDetails details) {
@@ -87,7 +93,9 @@ void main() async {
     );
   };
 
-  print('🚀 Banking App: Running app...');
+  if (kDebugMode) {
+    debugPrint('Banking App: runApp');
+  }
   runApp(const BankingApp());
 }
 

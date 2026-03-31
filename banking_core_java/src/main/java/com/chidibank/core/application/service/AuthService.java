@@ -3,6 +3,8 @@ package com.chidibank.core.application.service;
 import com.chidibank.core.adapter.in.web.dto.AuthRequest;
 import com.chidibank.core.adapter.in.web.dto.AuthResponse;
 import com.chidibank.core.adapter.in.web.dto.RegisterRequest;
+import com.chidibank.core.application.exception.NotFoundException;
+import com.chidibank.core.application.exception.ValidationException;
 import com.chidibank.core.application.port.in.AuthUseCase;
 import com.chidibank.core.application.port.out.AccountPort;
 import com.chidibank.core.application.port.out.LoginSessionPort;
@@ -10,22 +12,30 @@ import com.chidibank.core.application.port.out.AuditLogPort;
 import com.chidibank.core.application.port.out.TermsAcceptancePort;
 import com.chidibank.core.application.port.out.PasswordResetPort;
 import com.chidibank.core.application.port.out.UserPort;
+import com.chidibank.core.application.port.out.TokenBlacklistPort;
 import com.chidibank.core.application.port.out.UserProfilePort;
 import com.chidibank.core.domain.User;
+import com.chidibank.core.infrastructure.security.CustomUserDetailsService;
 import com.chidibank.core.infrastructure.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService implements AuthUseCase {
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
@@ -37,6 +47,8 @@ public class AuthService implements AuthUseCase {
     private final AuditLogPort auditLogPort;
     private final PasswordResetPort resetPort;
     private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final TokenBlacklistPort tokenBlacklistPort;
 
     @Override
     public AuthResponse login(AuthRequest request) {
@@ -46,7 +58,7 @@ public class AuthService implements AuthUseCase {
                         "Invalid student ID or password"));
 
         if (user.isLocked() && user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now())) {
-            throw new RuntimeException("Account is locked. Please try again after " + user.getLockedUntil());
+            throw new ValidationException("ACCOUNT_LOCKED", "Account is locked. Please try again later");
         }
 
         try {
@@ -104,11 +116,11 @@ public class AuthService implements AuthUseCase {
     public User register(RegisterRequest request) {
         // 1. Validation
         if (userPort.existsByStudentId(request.getStudentId())) {
-            throw new RuntimeException("Student ID already registered");
+            throw new ValidationException("STUDENT_ID_EXISTS", "Student ID already registered");
         }
 
         if (userPort.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already registered");
+            throw new ValidationException("EMAIL_EXISTS", "Email already registered");
         }
 
         // 2. Create User
@@ -169,23 +181,33 @@ public class AuthService implements AuthUseCase {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public AuthResponse refreshToken(String refreshToken) {
         if (!tokenProvider.validateRefreshToken(refreshToken)) {
-            throw new RuntimeException("Invalid refresh token");
+            throw new ValidationException("INVALID_REFRESH_TOKEN", "Invalid refresh token");
+        }
+
+        var sessionOpt = sessionPort.findActiveByRefreshToken(refreshToken);
+        if (sessionOpt.isEmpty()) {
+            throw new ValidationException("INVALID_REFRESH_TOKEN", "Session invalid or revoked");
         }
 
         String username = tokenProvider.getUsernameFromRefreshToken(refreshToken);
         User user = userPort.findByStudentId(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
 
-        // In a real app, check if refreshToken is blacklisted or belongs to this user
+        if (!sessionOpt.get().userId().equals(user.getId())) {
+            throw new ValidationException("INVALID_REFRESH_TOKEN", "Invalid session");
+        }
 
-        String newAccessToken = tokenProvider.generateAccessToken(
-                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(username, null,
-                        java.util.Collections.emptyList()));
-        String newRefreshToken = tokenProvider.generateRefreshToken(
-                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(username, null,
-                        java.util.Collections.emptyList()));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+        String newAccessToken = tokenProvider.generateAccessToken(auth);
+        String newRefreshToken = tokenProvider.generateRefreshToken(auth);
+
+        sessionPort.updateSessionTokens(sessionOpt.get().id(), newAccessToken, newRefreshToken,
+                LocalDateTime.now().plusDays(7));
 
         return AuthResponse.builder()
                 .success(true)
@@ -211,18 +233,30 @@ public class AuthService implements AuthUseCase {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public void logout(String accessToken) {
-        // Implementation for blacklisting token would go here
+        if (accessToken == null || accessToken.isBlank()) {
+            SecurityContextHolder.clearContext();
+            return;
+        }
+        if (tokenProvider.validateToken(accessToken)) {
+            sessionPort.findActiveByAccessToken(accessToken).ifPresent(h -> sessionPort.deactivateSession(h.id()));
+            Date exp = tokenProvider.getExpirationFromAccessToken(accessToken);
+            if (exp != null) {
+                LocalDateTime expLocal = exp.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                tokenBlacklistPort.blacklistAccessToken(accessToken, expLocal);
+            }
+        }
         SecurityContextHolder.clearContext();
     }
 
     @Override
     public void forgotPassword(String email) {
         User user = userPort.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with this email"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found with this email"));
 
         String resetCode = String.valueOf(100000 + new java.util.Random().nextInt(900000));
-        System.out.println("DEBUG: Password reset code for " + email + " is " + resetCode);
+        log.info("Generated password reset code for user {}", user.getId());
 
         // Save to DB
         resetPort.createResetToken(user.getId(), resetCode, LocalDateTime.now().plusMinutes(15));
@@ -237,11 +271,11 @@ public class AuthService implements AuthUseCase {
     @org.springframework.transaction.annotation.Transactional
     public void resetPassword(String email, String token, String newPassword) {
         if (!verifyResetCode(email, token)) {
-            throw new RuntimeException("Invalid or expired reset code");
+            throw new ValidationException("INVALID_RESET_CODE", "Invalid or expired reset code");
         }
 
         User user = userPort.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userPort.saveUser(user);
@@ -256,10 +290,10 @@ public class AuthService implements AuthUseCase {
     @org.springframework.transaction.annotation.Transactional
     public void changePassword(String studentId, String currentPassword, String newPassword) {
         User user = userPort.findByStudentId(studentId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
 
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new RuntimeException("Mật khẩu hiện tại không đúng");
+            throw new ValidationException("CURRENT_PASSWORD_INVALID", "Mật khẩu hiện tại không đúng");
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -277,7 +311,7 @@ public class AuthService implements AuthUseCase {
     @Override
     public AuthResponse getMe(String studentId) {
         User user = userPort.findByStudentId(studentId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
 
         AuthResponse.UserData userData = AuthResponse.UserData.builder()
                 .id(user.getId())

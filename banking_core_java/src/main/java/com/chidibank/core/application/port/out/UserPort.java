@@ -1,6 +1,7 @@
 package com.chidibank.core.application.port.out;
 
 import com.chidibank.core.domain.User;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserPort {
@@ -11,6 +12,10 @@ public interface UserPort {
     Optional<User> findByStudentId(String studentId);
 
     Optional<User> findByEmail(String email);
+    List<User> findAll(int page, int limit);
+    long countAll();
+    long countActiveUsers();
+    long countPendingKyc();
 
     boolean existsByStudentId(String studentId);
 

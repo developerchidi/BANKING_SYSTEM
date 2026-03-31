@@ -89,4 +89,20 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    /**
+     * Lấy thời điểm hết hạn của access token (để blacklist đến đúng lúc).
+     */
+    public java.util.Date getExpirationFromAccessToken(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith((javax.crypto.SecretKey) getSigningKey(jwtSecret))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getExpiration();
+        } catch (JwtException | IllegalArgumentException ex) {
+            return null;
+        }
+    }
 }

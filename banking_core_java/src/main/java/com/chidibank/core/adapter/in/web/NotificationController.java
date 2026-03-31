@@ -1,6 +1,7 @@
 package com.chidibank.core.adapter.in.web;
 
 import com.chidibank.core.application.port.in.NotificationUseCase;
+import com.chidibank.core.application.exception.NotFoundException;
 import com.chidibank.core.application.port.out.UserPort;
 import com.chidibank.core.domain.Notification;
 import com.chidibank.core.domain.User;
@@ -14,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class NotificationController {
 
     private final NotificationUseCase notificationUseCase;
@@ -102,7 +102,7 @@ public class NotificationController {
     private String getCurrentUserId(Authentication authentication) {
         String studentId = authentication.getName();
         User user = userPort.findByStudentId(studentId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
         return user.getId();
     }
 }

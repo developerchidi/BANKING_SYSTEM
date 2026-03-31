@@ -10,7 +10,9 @@ import com.chidibank.core.application.port.out.TransactionPort;
 import com.chidibank.core.domain.Transaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,6 +67,31 @@ public class TransactionPersistenceAdapter implements TransactionPort {
     }
 
     @Override
+    public Optional<Transaction> findByIdempotencyKey(String idempotencyKey) {
+        return transactionRepository.findByIdempotencyKey(idempotencyKey).map(this::mapToDomain);
+    }
+
+    @Override
+    public List<Transaction> findAll(int page, int limit) {
+        int normalizedPage = Math.max(page - 1, 0);
+        int normalizedLimit = Math.max(limit, 1);
+        return transactionRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(normalizedPage, normalizedLimit))
+                .stream()
+                .map(this::mapToDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countAll() {
+        return transactionRepository.count();
+    }
+
+    @Override
+    public double totalVolumeCompleted() {
+        return transactionRepository.sumCompletedVolume();
+    }
+
+    @Override
     public List<Transaction> findByAccountId(String accountId) {
         return transactionRepository.findBySenderAccountIdOrReceiverAccountIdOrderByCreatedAtDesc(accountId, accountId)
                 .stream()
@@ -78,6 +105,12 @@ public class TransactionPersistenceAdapter implements TransactionPort {
                 .stream()
                 .map(this::mapToDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public double sumCompletedOutgoingFromAccountSince(String accountId, LocalDateTime since) {
+        Double v = transactionRepository.sumCompletedOutgoingFromAccountSince(accountId, since);
+        return v != null ? v : 0.0;
     }
 
     private Transaction mapToDomain(TransactionEntity entity) {

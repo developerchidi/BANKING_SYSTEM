@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
+import 'token_storage.dart';
 
 class ApiClient {
   final http.Client _client;
@@ -114,8 +115,7 @@ class ApiClient {
   }
 
   static Future<Map<String, String>> buildHeaders() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('accessToken');
+    final token = await TokenStorage.readAccessToken();
     return {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
@@ -125,16 +125,10 @@ class ApiClient {
   Future<Map<String, String>> _buildHeaders(
     Map<String, String>? headers,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('accessToken');
-
-    print(
-      '🔐 HTTP Client: Building headers with token: ${token != null ? 'Present' : 'Missing'}',
-    );
-    if (token != null) {
-      final previewLength = token.length > 20 ? 20 : token.length;
-      print(
-        '🔐 HTTP Client: Token preview: ${token.substring(0, previewLength)}...',
+    final token = await TokenStorage.readAccessToken();
+    if (kDebugMode) {
+      debugPrint(
+        'HTTP: auth header ${token != null ? "present" : "missing"}',
       );
     }
 
@@ -146,19 +140,9 @@ class ApiClient {
   }
 
   Future<void> _handleTokenExpiration(BuildContext? context) async {
-    print('🔐 HTTP Client: Handling token expiration');
-    print('🔐 HTTP Client: Context available: ${context != null}');
-
-    // Use AuthService to handle logout
     await AuthService.logout();
-    print('🔐 Token expired - user logged out');
-
-    // Show modal if context is available
     if (context != null) {
-      print('🔐 HTTP Client: Showing token expiration modal');
       await AuthService.showTokenExpirationModal(context);
-    } else {
-      print('🔐 HTTP Client: No context available, cannot show modal');
     }
   }
 }
