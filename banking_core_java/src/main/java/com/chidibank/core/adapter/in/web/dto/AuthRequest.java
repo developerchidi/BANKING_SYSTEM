@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class AuthRequest {
     @NotBlank
-    private String email;
+    private String studentId;
     @NotBlank
     private String password;
 }

@@ -13,8 +13,14 @@ public class Loan {
     private double interestRate;
     private int termMonths;
     private String status;
-    private double remainingBalance;
+    private Double disbursedAmount;
+    private LocalDateTime disbursedAt;
+    private Double monthlyPayment;
+    private Double totalInterest;
+    private Double remainingBalance;
+    private LocalDateTime nextPaymentDate;
     private String userId;
     private String accountId;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

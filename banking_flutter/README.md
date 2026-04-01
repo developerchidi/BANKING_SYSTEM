@@ -1,54 +1,30 @@
-# banking_flutter
+# Chidi Bank Mobile (Flutter)
 
-A new Flutter project.
+## Cổng API và Backend Java
 
-## Getting Started
+Mặc định app trỏ tới **`http://127.0.0.1:3001`** — trùng với `server.port` trong `banking_core_java` (`application.yml`).
 
-This project is a starting point for a Flutter application.
+Đổi host/port khi build:
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter run --dart-define=API_HOST=192.168.1.10 --dart-define=API_PORT=3001
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+URL đầy đủ (staging/prod HTTPS) và flavor:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# Banking Flutter App
+```bash
+flutter run --dart-define=API_BASE_URL=https://api.example.com --dart-define=FLAVOR=staging
+```
 
-A Flutter port of the mobile app UI, referencing mobile-app/ flows (Auth with optional 2FA, basic Dashboard).
+Access/refresh token được lưu bằng `flutter_secure_storage` (fallback migrate từ SharedPreferences).
 
-## Prerequisites
-- Flutter SDK (stable)
-- Enable Windows Developer Mode (required by shared_preferences plugin):
-  - Run: start ms-settings:developers
-  - Turn on Developer Mode
+## Kiểm thử
 
-## Configure API
-Edit lib/src/config/api_config.dart:
-`
-static const String baseUrl = 'http://YOUR_IP:3001';
-`
-You can mirror IPs from mobile-app/src/config/environments.ts.
+```bash
+flutter test
+flutter analyze
+```
 
-## Install dependencies
-`
-flutter pub get
-`
+## Cấu trúc
 
-## Run
-`
-flutter run -d windows   # or chrome / android / ios
-`
-
-## Auth Flow
-1. Login with email/password
-2. If server returns equiresTwoFactor=true, navigate to 2FA screen
-3. Enter 6-digit code  complete login, navigate to Dashboard
-
-## Notes
-- Tokens are stored with shared_preferences under keys: ccessToken, efreshToken, user.
-- Endpoints mirror mobile-app:
-  - POST /api/auth/login
-  - POST /api/auth/2fa/complete-login
-- Extend with accounts/transactions screens by following the same pattern.
+- `lib/src/config/api_config.dart` — base URL và endpoint prefix.

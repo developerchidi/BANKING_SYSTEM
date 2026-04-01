@@ -1,8 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'http_client.dart';
 import 'token_expiration_service.dart';
+import 'token_storage.dart';
+import '../config/api_config.dart';
+
+void _authDebug(String message) {
+  if (kDebugMode) {
+    debugPrint(message);
+  }
+}
 
 class AuthService {
   final ApiClient _apiClient;
@@ -17,48 +26,32 @@ class AuthService {
   // Initialize authentication state
   static Future<void> initialize() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('accessToken');
+    final token = await TokenStorage.readAccessToken();
     final user = prefs.getString('user');
 
-    print('🔐 AuthService: Initializing authentication state');
-    print('🔐 AuthService: Token found: ${token != null ? 'Yes' : 'No'}');
-    print('🔐 AuthService: User found: ${user != null ? 'Yes' : 'No'}');
+    _authDebug('AuthService: init token=${token != null} user=${user != null}');
+    await TokenStorage.debugLogPresence();
 
     isAuthenticated.value = token != null && token.isNotEmpty;
     currentUser.value = user;
-
-    print(
-      '🔐 AuthService: Initialized - isAuthenticated: ${isAuthenticated.value}',
-    );
   }
 
   // Login method for AuthProvider
   Future<Map<String, dynamic>> login(String studentId, String password) async {
-    print('🔐 AuthService: Attempting login for student ID: $studentId');
+    _authDebug('AuthService: login attempt');
 
     final response = await _apiClient.post(
-      '/api/auth/login',
+      '${ApiConfig.auth}/login',
       body: {'studentId': studentId, 'password': password},
     );
 
-    print('🔐 AuthService: Login response status: ${response.statusCode}');
-    print('🔐 AuthService: Login response body: ${response.body}');
+    _authDebug('AuthService: login status ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print('🔐 AuthService: Parsed response data: $data');
-      print('🔐 AuthService: Response keys: ${data.keys.toList()}');
-      print(
-        '🔐 AuthService: AccessToken in response: ${data['accessToken'] != null ? 'Yes' : 'No'}',
-      );
-      print(
-        '🔐 AuthService: RefreshToken in response: ${data['refreshToken'] != null ? 'Yes' : 'No'}',
-      );
 
       // Check if 2FA is required
       if (data['requiresTwoFactor'] == true) {
-        print('🔐 AuthService: 2FA required, storing temporary data');
-
         // Store temporary token and user ID for 2FA
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('temporaryToken', data['temporaryToken']);
@@ -73,12 +66,6 @@ class AuthService {
       final refreshToken = data['refreshToken'];
       final user = data['user'];
 
-      print('🔐 AuthService: Token received: ${token != null ? 'Yes' : 'No'}');
-      print(
-        '🔐 AuthService: Refresh token received: ${refreshToken != null ? 'Yes' : 'No'}',
-      );
-      print('🔐 AuthService: User received: ${user != null ? 'Yes' : 'No'}');
-
       if (token != null) {
         await _saveTokensWithRefresh(token, refreshToken, user);
         return data;
@@ -92,7 +79,7 @@ class AuthService {
   Future<Map<String, dynamic>> verifyResetCode(String code) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/verify-reset-code',
+        '${ApiConfig.auth}/verify-reset-code',
         body: {'token': code},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -111,7 +98,7 @@ class AuthService {
   // Complete 2FA method for AuthProvider
   Future<Map<String, dynamic>> complete2FA(String userId, String code) async {
     final response = await _apiClient.post(
-      '/api/auth/2fa/complete-login',
+      '${ApiConfig.auth}/2fa/complete-login',
       body: {'userId': userId, 'code': code},
     );
 
@@ -142,31 +129,23 @@ class AuthService {
     final tempToken = prefs.getString('temporaryToken');
     final userId = prefs.getString('userId');
 
-    print('🔐 AuthService: Completing 2FA with userId: $userId');
+    _authDebug('AuthService: complete 2FA');
 
     if (tempToken == null || userId == null) {
       throw Exception('No temporary token or user ID found');
     }
 
     final response = await _apiClient.post(
-      '/api/auth/2fa/complete-login',
+      '${ApiConfig.auth}/2fa/complete-login',
       body: {'userId': userId, 'code': code},
     );
 
-    print('🔐 AuthService: 2FA response status: ${response.statusCode}');
-    print('🔐 AuthService: 2FA response body: ${response.body}');
+    _authDebug('AuthService: 2FA status ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final tokens = data['tokens'];
       final user = data['user'];
-
-      print(
-        '🔐 AuthService: 2FA Token received: ${tokens != null ? 'Yes' : 'No'}',
-      );
-      print(
-        '🔐 AuthService: 2FA User received: ${user != null ? 'Yes' : 'No'}',
-      );
 
       if (tokens != null && user != null) {
         await _saveTokensWithRefresh(
@@ -190,31 +169,12 @@ class AuthService {
 
   // Save tokens and update state
   Future<void> _saveTokens(String token, dynamic user) async {
-    print('🔐 AuthService: Saving tokens and user data');
-    print('🔐 AuthService: Token length: ${token.length}');
-    print('🔐 AuthService: User data: ${user.toString()}');
-
+    await TokenStorage.writeTokens(accessToken: token, refreshToken: null);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('accessToken', token);
     await prefs.setString('user', jsonEncode(user));
-
-    print('🔐 AuthService: Tokens saved to SharedPreferences');
-
-    // Verify token was saved
-    final savedToken = prefs.getString('accessToken');
-    print(
-      '🔐 AuthService: Verification - token saved: ${savedToken != null ? 'Yes' : 'No'}',
-    );
-    print(
-      '🔐 AuthService: Verification - saved token length: ${savedToken?.length ?? 0}',
-    );
-
+    _authDebug('AuthService: tokens saved (secure)');
     isAuthenticated.value = true;
     currentUser.value = jsonEncode(user);
-
-    print(
-      '🔐 AuthService: AuthService state updated - isAuthenticated: ${isAuthenticated.value}',
-    );
   }
 
   // Save tokens with refresh token
@@ -223,95 +183,49 @@ class AuthService {
     String? refreshToken,
     dynamic user,
   ) async {
-    print('🔐 AuthService: Saving tokens with refresh token');
-    print('🔐 AuthService: Access token length: ${accessToken.length}');
-    print(
-      '🔐 AuthService: Refresh token available: ${refreshToken != null ? 'Yes' : 'No'}',
+    await TokenStorage.writeTokens(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     );
-    print('🔐 AuthService: User data: ${user.toString()}');
-
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('accessToken', accessToken);
-    if (refreshToken != null && refreshToken.isNotEmpty) {
-      await prefs.setString('refreshToken', refreshToken);
-      print('🔐 AuthService: Refresh token saved');
-    }
     await prefs.setString('user', jsonEncode(user));
-
-    print('🔐 AuthService: All tokens saved to SharedPreferences');
-
-    // Verify tokens were saved
-    final savedAccessToken = prefs.getString('accessToken');
-    final savedRefreshToken = prefs.getString('refreshToken');
-    print(
-      '🔐 AuthService: Verification - access token saved: ${savedAccessToken != null ? 'Yes' : 'No'}',
-    );
-    print(
-      '🔐 AuthService: Verification - refresh token saved: ${savedRefreshToken != null ? 'Yes' : 'No'}',
-    );
-    print(
-      '🔐 AuthService: Verification - access token length: ${savedAccessToken?.length ?? 0}',
-    );
-    print(
-      '🔐 AuthService: Verification - refresh token length: ${savedRefreshToken?.length ?? 0}',
-    );
-
+    _authDebug('AuthService: tokens+refresh saved (secure)');
     isAuthenticated.value = true;
     currentUser.value = jsonEncode(user);
-
-    print(
-      '🔐 AuthService: AuthService state updated - isAuthenticated: ${isAuthenticated.value}',
-    );
   }
 
   // Static login method for direct use
   static Future<void> setLoginState(String token, String user) async {
-    print('🔐 AuthService: setLoginState called');
-    print('🔐 AuthService: Token length: ${token.length}');
-    print('🔐 AuthService: User data: $user');
-
+    await TokenStorage.writeTokens(accessToken: token, refreshToken: null);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('accessToken', token);
     await prefs.setString('user', user);
-
-    print('🔐 AuthService: Static tokens saved to SharedPreferences');
-
     isAuthenticated.value = true;
     currentUser.value = user;
-
-    print(
-      '🔐 AuthService: Static state updated - isAuthenticated: ${isAuthenticated.value}',
-    );
   }
 
   // Logout
   static Future<void> logout() async {
+    await TokenStorage.clearTokens();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('accessToken');
-    await prefs.remove('refreshToken');
     await prefs.remove('user');
-
     isAuthenticated.value = false;
     currentUser.value = null;
   }
 
   // Show token expiration modal
   static Future<void> showTokenExpirationModal(BuildContext context) async {
-    print('🔐 AuthService: Showing token expiration modal');
+    _authDebug('AuthService: token expiration modal');
     try {
       await TokenExpirationService.showAnimatedTokenExpirationModal(
         context: context,
         onLoginPressed: () {
-          print('🔐 AuthService: Login button pressed in modal');
-          // Navigate to login screen
           Navigator.of(
             context,
           ).pushNamedAndRemoveUntil('/login', (route) => false);
         },
       );
-      print('🔐 AuthService: Token expiration modal shown successfully');
     } catch (e) {
-      print('🔐 AuthService: Error showing token expiration modal: $e');
+      _authDebug('AuthService: modal error $e');
       // Fallback: Navigate directly to login
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     }
@@ -321,7 +235,7 @@ class AuthService {
   Future<Map<String, dynamic>> verifyEmail(String token) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/verify-email',
+        '${ApiConfig.auth}/verify-email',
         body: {'token': token},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -339,7 +253,7 @@ class AuthService {
 
   Future<Map<String, dynamic>> resendEmailVerification() async {
     try {
-      final response = await _apiClient.post('/api/auth/resend-verification');
+      final response = await _apiClient.post('${ApiConfig.auth}/resend-verification');
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       final success = response.statusCode == 200;
       return {
@@ -359,7 +273,7 @@ class AuthService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/change-email',
+        '${ApiConfig.auth}/change-email',
         body: {'newEmail': newEmail, 'password': password},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -379,7 +293,7 @@ class AuthService {
 
   Future<bool> isEmailAvailable(String email) async {
     try {
-      final res = await _apiClient.get('/api/auth/check-email?email=$email');
+      final res = await _apiClient.get('${ApiConfig.auth}/check-email?email=$email');
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         return data['exists'] == false;
@@ -411,81 +325,48 @@ class AuthService {
 
   // Check if user is authenticated
   static Future<bool> checkAuth() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('accessToken');
+    final token = await TokenStorage.readAccessToken();
     return token != null && token.isNotEmpty;
   }
 
   // Refresh token if needed
   Future<void> refreshTokenIfNeeded() async {
-    print('🔐 AuthService: Checking if token refresh is needed');
-
-    final prefs = await SharedPreferences.getInstance();
-    final refreshToken = prefs.getString('refreshToken');
-
+    final refreshToken = await TokenStorage.readRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) {
-      print('🔐 AuthService: No refresh token available');
       return;
     }
-
     try {
-      print('🔐 AuthService: Attempting to refresh token');
       final response = await _apiClient.post(
-        '/api/auth/refresh',
+        '${ApiConfig.auth}/refresh',
         body: {'refreshToken': refreshToken},
       );
-
-      print('🔐 AuthService: Refresh response status: ${response.statusCode}');
-      print('🔐 AuthService: Refresh response body: ${response.body}');
-
+      _authDebug('AuthService: refresh status ${response.statusCode}');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final newAccessToken = data['accessToken'];
         final newRefreshToken = data['refreshToken'];
         final user = data['user'];
-
         if (newAccessToken != null) {
-          print('🔐 AuthService: Token refreshed successfully');
           await _saveTokensWithRefresh(newAccessToken, newRefreshToken, user);
         }
-      } else {
-        print('🔐 AuthService: Token refresh failed: ${response.statusCode}');
       }
     } catch (e) {
-      print('🔐 AuthService: Token refresh error: $e');
+      _authDebug('AuthService: refresh error $e');
     }
   }
 
   // Test token validity by making a simple API call
   Future<bool> testTokenValidity() async {
-    print('🔐 AuthService: Testing token validity');
-
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('accessToken');
-
+    final token = await TokenStorage.readAccessToken();
     if (token == null || token.isEmpty) {
-      print('🔐 AuthService: No token available for testing');
       return false;
     }
-
     try {
-      // Make a simple API call to test token
-      final response = await _apiClient.get('/api/auth/me');
-      print(
-        '🔐 AuthService: Token test response status: ${response.statusCode}',
-      );
-
-      if (response.statusCode == 200) {
-        print('🔐 AuthService: Token is valid');
-        return true;
-      } else {
-        print(
-          '🔐 AuthService: Token is invalid - status: ${response.statusCode}',
-        );
-        return false;
-      }
+      final response = await _apiClient.get('${ApiConfig.auth}/me');
+      _authDebug('AuthService: /me status ${response.statusCode}');
+      return response.statusCode == 200;
     } catch (e) {
-      print('🔐 AuthService: Token test error: $e');
+      _authDebug('AuthService: token test error $e');
       return false;
     }
   }
@@ -493,7 +374,7 @@ class AuthService {
   // Get user profile
   Future<Map<String, dynamic>> getUserProfile() async {
     try {
-      final response = await _apiClient.get('/api/auth/me');
+      final response = await _apiClient.get('${ApiConfig.auth}/me');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         return {'success': true, 'data': data['data']};
@@ -511,7 +392,7 @@ class AuthService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/change-password',
+        '${ApiConfig.auth}/change-password',
         body: {'currentPassword': currentPassword, 'newPassword': newPassword},
       );
 
@@ -535,7 +416,7 @@ class AuthService {
   Future<Map<String, dynamic>> enableTwoFactor(String password) async {
     try {
       final response = await _apiClient.post(
-        '/api/2fa/enable',
+        '${ApiConfig.twoFA}/enable',
         body: {'password': password},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -556,7 +437,7 @@ class AuthService {
   Future<Map<String, dynamic>> disableTwoFactor(String password) async {
     try {
       final response = await _apiClient.post(
-        '/api/2fa/disable',
+        '${ApiConfig.twoFA}/disable',
         body: {'password': password},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -576,7 +457,7 @@ class AuthService {
   Future<Map<String, dynamic>> forgotPassword(String email) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/forgot-password',
+        '${ApiConfig.auth}/forgot-password',
         body: {'email': email},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -601,7 +482,7 @@ class AuthService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/api/auth/reset-password',
+        '${ApiConfig.auth}/reset-password',
         body: {'token': token, 'newPassword': newPassword},
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;

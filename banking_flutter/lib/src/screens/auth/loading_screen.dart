@@ -7,6 +7,7 @@ import '../../services/notification_service.dart';
 import '../../theme/theme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../../services/token_storage.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -76,8 +77,16 @@ class _LoadingScreenState extends State<LoadingScreen>
       // Connect to notification WebSocket
       try {
         final prefs = await SharedPreferences.getInstance();
-        final userId = prefs.getString('userId');
-        final accessToken = prefs.getString('accessToken');
+        String? userId = prefs.getString('userId');
+        if (userId == null || userId.isEmpty) {
+          final u = prefs.getString('user');
+          if (u != null) {
+            try {
+              userId = (jsonDecode(u) as Map<String, dynamic>)['id'] as String?;
+            } catch (_) {}
+          }
+        }
+        final accessToken = await TokenStorage.readAccessToken();
         if (userId != null && accessToken != null) {
           await NotificationService().updateUserCredentials(userId, accessToken);
         }

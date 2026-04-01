@@ -10,6 +10,7 @@ import '../../services/auth_service.dart';
 import '../../services/card_service.dart';
 import '../../services/notification_api_service.dart';
 import '../../services/notification_service.dart';
+import '../../services/token_storage.dart';
 import '../../models/account.dart';
 import '../../models/transaction.dart';
 import '../../theme/theme_provider.dart';
@@ -45,9 +46,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     ApiClient(),
   );
 
-  late Future<String?> _tokenFut = SharedPreferences.getInstance().then(
-    (p) => p.getString('accessToken'),
-  );
+  late Future<String?> _tokenFut = TokenStorage.readAccessToken();
   late Future<List<Account>> _accountsFut = _getAccountsWithCache();
   late Future<List<BankTransaction>> _txFut = _getTransactionsWithCache();
   late Future<List<CardDto>> _cardsFut = _getCardsWithCache();
@@ -181,9 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
   void _loadData() {
     print('📱 Dashboard: _loadData called');
     setState(() {
-      _tokenFut = SharedPreferences.getInstance().then(
-        (p) => p.getString('accessToken'),
-      );
+      _tokenFut = TokenStorage.readAccessToken();
       _accountsFut = _getAccountsWithCache();
       _txFut = _getTransactionsWithCache();
       _cardsFut = _getCardsWithCache();
@@ -197,9 +194,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
 
     _invalidateCache();
     setState(() {
-      _tokenFut = SharedPreferences.getInstance().then(
-        (p) => p.getString('accessToken'),
-      );
+      _tokenFut = TokenStorage.readAccessToken();
       _accountsFut = _getAccountsWithCache();
       _txFut = _getTransactionsWithCache();
       _cardsFut = _getCardsWithCache();
@@ -258,8 +253,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
   }
 
   Future<String?> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('accessToken');
+    return TokenStorage.readAccessToken();
   }
 
   String _greeting() {

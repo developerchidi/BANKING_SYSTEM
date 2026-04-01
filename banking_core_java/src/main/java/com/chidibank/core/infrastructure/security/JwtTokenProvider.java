@@ -8,50 +8,101 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret:QWxsIFlvdXIgQmFzZSBBcmUgQmVsb25nIFRvIFVzIFdpdGggQSAyNTYgQml0IEtleQ==}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration:86400000}")
-    private long jwtExpirationInMs;
+    @Value("${jwt.expiration}")
+    private Duration jwtExpiration;
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    @Value("${jwt.refresh-secret}")
+    private String refreshSecret;
+
+    @Value("${jwt.refresh-expiration}")
+    private Duration refreshExpiration;
+
+    private Key getSigningKey(String secret) {
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(Authentication authentication) {
+    public String generateAccessToken(Authentication authentication) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+        return generateToken(userPrincipal.getUsername(), jwtSecret, jwtExpiration);
+    }
+
+    public String generateRefreshToken(Authentication authentication) {
+        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+        return generateToken(userPrincipal.getUsername(), refreshSecret, refreshExpiration);
+    }
+
+    private String generateToken(String subject, String secret, Duration expiration) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Date expiryDate = new Date(now.getTime() + expiration.toMillis());
 
         return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(expiryDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .subject(subject)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey(secret))
                 .compact();
     }
 
     public String getUsernameFromJWT(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+        return Jwts.parser()
+                .verifyWith((javax.crypto.SecretKey) getSigningKey(jwtSecret))
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
 
-        return claims.getSubject();
+    public String getUsernameFromRefreshToken(String token) {
+        return Jwts.parser()
+                .verifyWith((javax.crypto.SecretKey) getSigningKey(refreshSecret))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
     }
 
     public boolean validateToken(String authToken) {
+        return validateJwt(authToken, jwtSecret);
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        return validateJwt(refreshToken, refreshSecret);
+    }
+
+    private boolean validateJwt(String token, String secret) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
+            Jwts.parser()
+                .verifyWith((javax.crypto.SecretKey) getSigningKey(secret))
+                .build()
+                .parseSignedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
             return false;
+        }
+    }
+
+    /**
+     * Lấy thời điểm hết hạn của access token (để blacklist đến đúng lúc).
+     */
+    public java.util.Date getExpirationFromAccessToken(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith((javax.crypto.SecretKey) getSigningKey(jwtSecret))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getExpiration();
+        } catch (JwtException | IllegalArgumentException ex) {
+            return null;
         }
     }
 }

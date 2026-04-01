@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 import '../services/notification_service.dart';
+import '../services/token_storage.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService authService;
@@ -141,10 +142,10 @@ class AuthProvider extends ChangeNotifier {
     final access = tokens['accessToken'] as String?;
     final refresh = tokens['refreshToken'] as String?;
     if (access != null && access.isNotEmpty) {
-      await prefs.setString('accessToken', access);
-    }
-    if (refresh != null && refresh.isNotEmpty) {
-      await prefs.setString('refreshToken', refresh);
+      await TokenStorage.writeTokens(
+        accessToken: access,
+        refreshToken: refresh,
+      );
     }
     final user = result['user'];
     if (user != null) {
@@ -154,13 +155,7 @@ class AuthProvider extends ChangeNotifier {
       // Connect to WebSocket notifications
       final userId = _user?['id'] as String?;
       if (userId != null && access != null) {
-        print('🔌 Connecting to WebSocket for user: $userId');
         await NotificationService().updateUserCredentials(userId, access);
-        print('✅ WebSocket connection initiated');
-      } else {
-        print('❌ Cannot connect WebSocket - missing userId or accessToken');
-        print('   UserId: $userId');
-        print('   AccessToken: ${access?.substring(0, 20)}...');
       }
     }
     notifyListeners();

@@ -7,6 +7,7 @@ import '../../widgets/info_dialog.dart';
 import 'dart:convert';
 import '../../services/auth_service.dart';
 import '../../services/http_client.dart';
+import '../../services/token_storage.dart';
 import '../../theme/app_theme.dart';
 
 class DateInputFormatter extends TextInputFormatter {
@@ -631,19 +632,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           );
           print('🔐 Register: Auto-login successful: $loginResult');
 
-          // Check if tokens were stored
-          final prefs = await SharedPreferences.getInstance();
-          final token = prefs.getString('accessToken');
-          final refreshToken = prefs.getString('refreshToken');
-          print(
-            '🔐 Register: Access token stored after login: ${token != null ? 'Yes' : 'No'}',
-          );
-          print('🔐 Register: Access token length: ${token?.length ?? 0}');
-          print(
-            '🔐 Register: Refresh token stored after login: ${refreshToken != null ? 'Yes' : 'No'}',
-          );
-          print(
-            '🔐 Register: Refresh token length: ${refreshToken?.length ?? 0}',
+          final token = await TokenStorage.readAccessToken();
+          final refreshToken = await TokenStorage.readRefreshToken();
+          debugPrint(
+            'Register: tokens access=${token != null} refresh=${refreshToken != null}',
           );
 
           // Navigate directly to main app (dashboard)

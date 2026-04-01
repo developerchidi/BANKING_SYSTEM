@@ -6,6 +6,13 @@
 !banking_admin/
 !banking_flutter/
 !banking_core_java/
+!banking_core_java/src/main/resources/application.yml
+banking_core_java/.env
+!docs/
+!docs/**
+docs/*.xlsx
+!.github/
+!.github/**
 !.gitignore
 !README.md
 !LICENSE
