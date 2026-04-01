@@ -1,15 +1,17 @@
-# CHIDI BANK - Digital Banking System
+# Chidi Bank -- Digital Banking System
 
 <div align="center">
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
-![Flutter](https://img.shields.io/badge/flutter-3.9.2+-02569B.svg?logo=flutter)
+![Java](https://img.shields.io/badge/Java-21-ED8B00.svg?logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-6DB33F.svg?logo=spring-boot)
+![Flutter](https://img.shields.io/badge/Flutter-3.9+-02569B.svg?logo=flutter)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-4169E1.svg?logo=postgresql&logoColor=white)
 
-**A comprehensive, production-ready digital banking system with mobile, web admin, and backend API**
+**A full-stack digital banking platform with a Spring Boot backend and Flutter mobile client.**
 
-[Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Documentation](#documentation)
+[Features](#features) | [Architecture](#architecture) | [Getting Started](#getting-started) | [API Reference](#api-reference) | [Testing](#testing) | [Documentation](#documentation)
 
 </div>
 
@@ -17,272 +19,143 @@
 
 ## Overview
 
-**CHIDI BANK** is a modern, enterprise-grade digital banking platform designed to provide a complete financial management solution. The system consists of three main components:
+Chidi Bank is a modern banking platform comprising two main modules:
 
-- **Backend API** - RESTful API built with Node.js, Express, and TypeScript
-- **Mobile App** - Cross-platform Flutter application for end users
-- **Admin Panel** - React-based web administration interface
+| Module | Technology | Description |
+|--------|-----------|-------------|
+| **banking_core_java** | Spring Boot 3.4 / Java 21 | RESTful API server: authentication, accounts, transactions, cards, notifications, interest, KYC, admin. |
+| **banking_flutter** | Flutter / Dart | Cross-platform mobile client: login, dashboard, transfers, card management, e-KYC, real-time notifications. |
 
-The platform supports comprehensive banking operations including account management, transactions, e-KYC verification, card management, interest calculations, and real-time notifications.
+The system uses PostgreSQL for persistence and Redis for OTP storage, token blacklisting, and rate limiting.
 
 ---
 
 ## Features
 
-### Authentication & Security
-- **Multi-factor Authentication** - Email/SMS/App-based 2FA
-- **JWT Token Management** - Access & Refresh tokens with automatic renewal
-- **Role-Based Access Control (RBAC)** - Fine-grained permissions system
-- **e-KYC Verification** - OCR-based identity verification using CCCD/CMND/Student ID
-- **Session Management** - Secure session handling with device tracking
-- **Transaction PIN** - Additional security layer for financial operations
+### Authentication and Security
+
+- JWT access and refresh tokens with session-bound rotation.
+- Logout with access-token blacklisting (DB-backed).
+- Two-factor authentication (email or app-based).
+- Redis rate limiting on login, register, and transfer endpoints.
+- KYC gate: sensitive operations (transfer, card issuance) require verified KYC status.
+- Request correlation via `X-Request-Id` header propagated through MDC.
+- Secure token storage on mobile (`flutter_secure_storage`).
 
 ### Account Management
-- **Multiple Account Types** - CHECKING, SAVINGS, BUSINESS accounts
-- **Account Tiers** - BASIC, STANDARD, PREMIUM, VIP with different benefits
-- **Real-time Balance** - Live balance updates via WebSocket
-- **Account Statements** - Transaction history with filters and export
-- **Account Limits** - Configurable transaction and daily limits
-- **Vanity Account Numbers** - Custom account number selection
 
-### Transaction System
-- **Internal Transfers** - Instant transfers within the bank
-- **External Transfers** - Inter-bank transfers
-- **QR Code Payments** - Scan and pay functionality
-- **Bill Payments** - Utility and service payments
-- **Recurring Payments** - Scheduled automatic payments
-- **Transaction History** - Comprehensive transaction logs with search
+- Multiple account types (Checking, Savings, Business).
+- Tier system (Basic, Standard, Premium, VIP) with automatic upgrades.
+- Configurable daily and monthly transaction limits, enforced server-side.
+- Real-time balance via WebSocket.
+
+### Transactions
+
+- Internal transfers with OTP verification, idempotency key, and atomic balance updates.
+- Daily/monthly limit enforcement computed from completed outgoing volume.
+- Transaction history with pagination and filtering.
+- Audit trail for every sensitive operation (PII-safe).
 
 ### Card Management
-- **Virtual Cards** - Debit and Credit card issuance
-- **Card Activation** - Secure card activation process
-- **PIN Management** - Card PIN setup and reset
-- **Spending Limits** - Daily and monthly spending controls
-- **Card Controls** - Lock/unlock cards remotely
 
-### Savings & Interest
-- **Savings Accounts** - Flexible and term deposits (3/6/12/24 months)
-- **Automatic Interest Calculation** - Daily/monthly interest accrual
-- **Compound Interest** - Automated interest compounding
-- **Interest Reports** - Detailed interest history
+- Virtual card issuance (Visa).
+- PIN hashing (bcrypt); CVV never returned by API.
+- Card number masked in all API responses (`**** **** **** 1234`).
+- Lock, unlock, activate, and limit configuration.
 
-### Mobile App Features
-- **Dark/Light Theme** - Customizable UI themes
-- **Biometric Authentication** - Face ID / Fingerprint login
-- **Push Notifications** - Real-time transaction alerts
-- **QR Scanner** - Built-in QR code scanner
-- **Camera Integration** - Document scanning for KYC
-- **Offline Support** - Cached data for offline viewing
+### Savings and Interest
 
-### Admin Panel
-- **User Management** - Complete user CRUD operations
-- **KYC Management** - Review and approve KYC submissions
-- **Transaction Monitoring** - View and manage all transactions
-- **Notification System** - Send announcements to users
-- **Dashboard Analytics** - Real-time statistics and reports
-- **Role Management** - Configure user roles and permissions
+- Scheduled interest calculation with idempotent execution.
+- Tier-based interest rate multiplier.
+- Compound interest support.
+
+### Notifications
+
+- Server-sent WebSocket notifications for transactions, deposits, interest, and system events.
+- Push notifications on mobile via `flutter_local_notifications`.
+- Mark-as-read, unread count, and history endpoints.
+
+### Observability
+
+- Structured console logging with correlation ID (`%X{requestId}`).
+- Spring Boot Actuator with health probes (DB + Redis readiness).
+- Audit log entity for compliance-sensitive actions.
 
 ---
 
-## Tech Stack
-
-### Backend
-- **Runtime**: Node.js (v18+)
-- **Framework**: Express.js
-- **Language**: TypeScript
-- **ORM**: Prisma
-- **Database**: PostgreSQL
-- **Authentication**: JWT (jsonwebtoken)
-- **Security**: bcrypt, Helmet.js, express-rate-limit
-- **Real-time**: WebSocket (ws)
-- **Email**: Nodemailer
-- **Scheduling**: node-cron
-- **Validation**: express-validator
-
-### Mobile App (Flutter)
-- **Framework**: Flutter 3.9.2+
-- **State Management**: Provider
-- **HTTP Client**: http package
-- **Local Storage**: shared_preferences
-- **QR Scanner**: mobile_scanner
-- **Camera**: camera package
-- **ML Kit**: google_mlkit_text_recognition, google_mlkit_face_detection
-- **Notifications**: flutter_local_notifications
-- **WebSocket**: web_socket_channel
-- **UI**: Material Design, Google Fonts
-
-### Admin Panel (React)
-- **Framework**: React 19
-- **Language**: TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **Routing**: React Router v7
-- **Icons**: Lucide React
-- **Charts**: Recharts
-
----
-
-## Project Structure
+## Architecture
 
 ```text
 Banking-System/
-├── backend/                 # Backend API Server
-│   ├── src/
-│   │   ├── config/         # Configuration files
-│   │   ├── controllers/    # Route controllers
-│   │   ├── middleware/     # Custom middleware
-│   │   ├── models/         # Data models
-│   │   ├── routes/         # API routes
-│   │   ├── services/       # Business logic
-│   │   └── utils/          # Utility functions
-│   ├── prisma/             # Prisma schema and migrations
-│   └── scripts/            # Utility scripts
-│
-├── banking_flutter/         # Flutter Mobile App
-│   └── lib/
-│       ├── src/
-│       │   ├── config/     # App configuration
-│       │   ├── models/     # Data models
-│       │   ├── routes/     # Navigation routes
-│       │   ├── screens/    # UI screens
-│       │   ├── services/   # API services
-│       │   ├── theme/      # Theme configuration
-│       │   └── widgets/    # Reusable widgets
-│       └── main.dart       # App entry point
-│
-├── banking_admin/           # React Admin Panel
-│   └── src/
-│       ├── components/     # React components
-│       ├── pages/          # Page components
-│       ├── services/       # API services
-│       └── types/          # TypeScript types
-│
-└── docs/                    # Documentation
+|-- banking_core_java/          Spring Boot backend
+|   |-- src/main/java/.../
+|   |   |-- adapter/in/web/     REST controllers (Auth, Banking, Card, Admin, User, Notification)
+|   |   |-- adapter/out/        JPA repositories, Redis adapters
+|   |   |-- application/
+|   |   |   |-- port/in/        Use-case interfaces
+|   |   |   |-- port/out/       Persistence port interfaces
+|   |   |   |-- service/        Business logic (AuthService, BankingService, CardService, ...)
+|   |   |   +-- exception/      Domain exceptions
+|   |   |-- domain/             Entity POJOs and enums
+|   |   +-- infrastructure/     Security filters, Redis/JPA config, JWT provider
+|   +-- src/test/java/          Unit tests (Mockito)
+|
+|-- banking_flutter/            Flutter mobile app
+|   +-- lib/
+|       |-- src/
+|       |   |-- config/         ApiConfig (host, port, base URL, flavor)
+|       |   |-- models/         Dart data models
+|       |   |-- providers/      ChangeNotifier state (AuthProvider, ThemeProvider)
+|       |   |-- screens/        UI screens (login, dashboard, transfer, KYC, cards, ...)
+|       |   |-- services/       API client, AuthService, TokenStorage, NotificationService
+|       |   +-- theme/          Light/dark theme definitions
+|       +-- main.dart
+|
+|-- docs/                       QA reports, smoke checklist, feature lists
++-- .github/workflows/          CI: Gradle test + Flutter test
 ```
+
+The backend follows a **hexagonal (ports-and-adapters)** design. Controllers call use-case ports; services implement business rules; persistence adapters fulfill outbound ports via Spring Data JPA and Redis.
 
 ---
 
-## Installation
+## Getting Started
 
 ### Prerequisites
 
-- **Node.js** >= 18.0.0
-- **npm** >= 9.0.0
-- **PostgreSQL** >= 14.0
-- **Flutter SDK** >= 3.9.2
-- **Git**
+| Dependency | Minimum Version |
+|------------|----------------|
+| Java (JDK) | 21 |
+| Gradle | 9.x (wrapper included) |
+| PostgreSQL | 14 |
+| Redis | 6 |
+| Flutter SDK | 3.9.2 |
+| Dart | 3.x (bundled with Flutter) |
 
-### Backend Setup
+### 1. Clone the repository
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/developerchidi/CHIDI_BANK.git
-   cd CHIDI_BANK/backend
-   ```
+```bash
+git clone https://github.com/developerchidi/BANKING_SYSTEM.git
+cd BANKING_SYSTEM
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 2. Backend setup
 
-3. **Configure environment variables**
-   ```bash
-   cp env.example .env
-   ```
-   
-   Edit `.env` with your configuration:
-   ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/banking_system"
-   JWT_SECRET="your-secret-key"
-   JWT_REFRESH_SECRET="your-refresh-secret-key"
-   PORT=3001
-   
-   # Email Configuration
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_MAIL=your-email@gmail.com
-   SMTP_PASSWORD=your-app-password
-   ```
+```bash
+cd banking_core_java
+```
 
-4. **Setup database**
-   ```bash
-   npm run db:generate
-   npm run db:migrate
-   npm run setup
-   ```
+Create a `.env` file (or export environment variables) with the following keys:
 
-5. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-   Server will run on `http://localhost:3001`
-
-### Mobile App Setup
-
-1. **Navigate to Flutter app**
-   ```bash
-   cd banking_flutter
-   ```
-
-2. **Install dependencies**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Configure API endpoint**
-   
-   Edit `lib/src/config/api_config.dart`:
-   ```dart
-   static const String baseUrl = 'http://YOUR_IP:3001';
-   ```
-
-4. **Run the app**
-   ```bash
-   flutter run
-   ```
-
-### Admin Panel Setup
-
-1. **Navigate to admin panel**
-   ```bash
-   cd banking_admin
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure API endpoint**
-   
-   Edit `src/services/api.ts` with your backend URL
-
-4. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-   Admin panel will run on `http://localhost:5173`
-
----
-
-## Configuration
-
-### Environment Variables
-
-#### Backend (.env)
 ```env
 # Database
-DATABASE_URL="postgresql://user:password@localhost:5432/banking_system"
-
-# Server
-PORT=3001
-NODE_ENV=development
+DATABASE_URL=localhost:5432/banking_system
+DB_USER=postgres
+DB_PASSWORD=your_password
 
 # JWT
-JWT_SECRET="your-secret-key"
-JWT_REFRESH_SECRET="your-refresh-secret-key"
+JWT_SECRET=your-access-secret
+JWT_REFRESH_SECRET=your-refresh-secret
 JWT_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
 
@@ -292,131 +165,198 @@ SMTP_PORT=587
 SMTP_MAIL=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
 
-# Security
-BCRYPT_ROUNDS=10
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
 
-# WebSocket
-WS_PORT=3001
+# Server
+PORT=3001
 ```
 
-### API Configuration
+Run the backend:
 
-Update the base URL in:
-- **Flutter**: `banking_flutter/lib/src/config/api_config.dart`
-- **Admin Panel**: `banking_admin/src/services/api.ts`
+```bash
+./gradlew bootRun
+```
+
+Verify health:
+
+```bash
+curl http://localhost:3001/actuator/health
+```
+
+### 3. Flutter setup
+
+```bash
+cd banking_flutter
+flutter pub get
+```
+
+By default the app connects to `http://127.0.0.1:3001`. Override at build time if needed:
+
+```bash
+# Custom host/port
+flutter run --dart-define=API_HOST=192.168.1.10 --dart-define=API_PORT=3001
+
+# Full URL for staging/production
+flutter run --dart-define=API_BASE_URL=https://api.example.com --dart-define=FLAVOR=staging
+```
 
 ---
 
-## API Documentation
+## API Reference
 
-### Base URL
-```text
-http://localhost:3001/api/v1
-```
+Base paths: `/api/auth`, `/api/banking`, `/api/cards`, `/api/user`, `/api/notifications`, `/api/admin`.
+Legacy prefix `/api/v1/...` is also supported for backward compatibility.
 
-### Authentication Endpoints
-- `POST /auth/register` - User registration
-- `POST /auth/login` - User login
-- `POST /auth/refresh` - Refresh access token
-- `POST /auth/logout` - User logout
-- `POST /auth/forgot-password` - Request password reset
-- `POST /auth/reset-password` - Reset password with code
-- `POST /auth/2fa/enable` - Enable 2FA
-- `POST /auth/2fa/verify` - Verify 2FA code
-- `POST /auth/2fa/complete-login` - Complete login with 2FA
+### Authentication
 
-### Account Endpoints
-- `GET /accounts` - Get user accounts
-- `POST /accounts` - Create new account
-- `GET /accounts/:id` - Get account details
-- `GET /accounts/:id/transactions` - Get account transactions
-- `PUT /accounts/:id/freeze` - Freeze account
-- `PUT /accounts/:id/unfreeze` - Unfreeze account
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/login` | Login (returns access + refresh tokens) |
+| POST | `/api/auth/refresh` | Rotate tokens (session-bound) |
+| POST | `/api/auth/logout` | Blacklist access token, deactivate session |
+| POST | `/api/auth/forgot-password` | Request password reset email |
+| POST | `/api/auth/reset-password` | Reset password with token |
+| POST | `/api/auth/2fa/enable` | Enable two-factor authentication |
+| POST | `/api/auth/2fa/complete-login` | Complete login with 2FA code |
+| GET  | `/api/auth/me` | Get current user profile |
 
-### Transaction Endpoints
-- `POST /transactions/internal` - Internal transfer
-- `POST /transactions/external` - External transfer
-- `GET /transactions` - Get transaction history
-- `GET /transactions/:id` - Get transaction details
-- `POST /transactions/verify-otp` - Verify transaction OTP
+### Banking
 
-### KYC Endpoints
-- `POST /kyc/submit` - Submit KYC documents
-- `GET /kyc/status` - Get KYC status
-- `GET /kyc/documents` - Get KYC documents (Admin)
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/banking/accounts` | List user accounts |
+| POST | `/api/banking/accounts` | Create account |
+| GET | `/api/banking/accounts/:id` | Account details |
+| POST | `/api/banking/transfer` | Initiate transfer (returns OTP) |
+| POST | `/api/banking/transfer/verify` | Verify transfer OTP |
+| POST | `/api/banking/transfer/resend-otp` | Resend transfer OTP |
+| GET | `/api/banking/transactions` | Transaction history (paginated) |
+| GET | `/api/banking/dashboard/summary` | Dashboard summary |
+| POST | `/api/banking/verify-account` | Verify destination account |
 
-### Notification Endpoints
-- `GET /notifications` - Get user notifications
-- `GET /notifications/:id` - Get notification details
-- `PUT /notifications/:id/read` - Mark as read
-- `PUT /notifications/read-all` - Mark all as read
-- `GET /notifications/unread-count` - Get unread count
+### Cards
 
-For complete API documentation, see [API Documentation](./backend/docs/API_DOCUMENTATION.md)
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/cards` | List user cards (PAN masked) |
+| POST | `/api/cards` | Create virtual card (KYC required) |
+| PUT | `/api/cards/:id/status` | Activate / block card |
+| PUT | `/api/cards/:id/pin` | Change card PIN |
+| PUT | `/api/cards/:id/limits` | Update spending limits |
 
----
+### Notifications
 
-## Security Features
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/notifications` | List notifications (paginated) |
+| PUT | `/api/notifications/:id/read` | Mark as read |
+| PUT | `/api/notifications/read-all` | Mark all as read |
+| GET | `/api/notifications/unread-count` | Unread count |
 
-- **Password Hashing**: bcrypt with configurable rounds
-- **JWT Tokens**: Secure token-based authentication
-- **Rate Limiting**: Protection against brute force attacks
-- **Input Validation**: express-validator for request validation
-- **Helmet.js**: Security headers
-- **CORS**: Configurable cross-origin resource sharing
-- **SQL Injection Prevention**: Prisma ORM with parameterized queries
-- **XSS Protection**: Input sanitization
-- **CSRF Protection**: Token-based CSRF protection
+All authenticated endpoints require the `Authorization: Bearer <token>` header.
 
 ---
 
 ## Testing
 
-### Backend
+### Backend (Java)
+
 ```bash
-cd backend
-npm test
+cd banking_core_java
+./gradlew test
 ```
 
+Current test suites:
+
+- `BankingCoreJavaApplicationTests` -- application context smoke test.
+- `AdminServiceTest` -- aggregated system stats.
+- `BankingServiceTransferRulesTest` -- KYC gate and daily limit enforcement.
+- `CustomUserDetailsServiceTest` -- user details and authority mapping.
+
 ### Flutter
+
 ```bash
 cd banking_flutter
 flutter test
 ```
 
+- `widget_test.dart` -- minimal smoke test (`MaterialApp` renders).
+
+### CI
+
+GitHub Actions workflow (`.github/workflows/ci-java-flutter.yml`) runs both `gradlew test` and `flutter test` on push.
+
+---
+
+## Configuration Reference
+
+### Backend (`application.yml`)
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `server.port` | `3001` | HTTP listen port |
+| `spring.data.redis.*` | `localhost:6379` | Redis connection |
+| `app.rate-limit.login-per-minute` | `60` | Max login attempts per IP per minute |
+| `app.rate-limit.transfer-per-minute` | `40` | Max transfer attempts per IP per minute |
+| `app.cors.allowed-origins` | `localhost:5173,localhost:3000` | CORS allowed origins |
+| `jwt.secret` / `jwt.refresh-secret` | (required) | JWT signing secrets |
+| `jwt.expiration` / `jwt.refresh-expiration` | (required) | Token TTL (e.g. `15m`, `7d`) |
+
+### Flutter (`ApiConfig`)
+
+| `--dart-define` | Default | Description |
+|-----------------|---------|-------------|
+| `API_HOST` | `127.0.0.1` | Backend host |
+| `API_PORT` | `3001` | Backend port |
+| `API_BASE_URL` | (none) | Full URL override (takes precedence) |
+| `FLAVOR` | `dev` | Build flavor label |
+
+---
+
+## Security Considerations
+
+- **Tokens**: Access tokens are short-lived; refresh tokens are rotated on each use and bound to a `LoginSession` record. Logout blacklists the access token until expiry.
+- **Passwords**: Hashed with bcrypt (12 rounds). Card PINs are also bcrypt-hashed.
+- **Rate limiting**: Redis-backed per-IP counters on authentication and transfer endpoints.
+- **Sensitive data**: Card PAN is masked in all API responses. CVV is never returned. Audit logs redact PII to the last 4 digits where applicable.
+- **Client storage**: Flutter stores tokens in OS-level secure storage (`flutter_secure_storage`), not `SharedPreferences`.
+- **Production**: Use environment variables or a secret manager for all credentials. The dotenv loader is skipped when `SPRING_PROFILES_ACTIVE` contains `prod`. Enable TLS via a reverse proxy or `server.ssl` configuration.
+
+---
+
+## Documentation
+
+| Document | Path |
+|----------|------|
+| QA Test Report | `docs/QA_TEST_REPORT.md` |
+| Smoke E2E Checklist | `docs/SMOKE_E2E_CHECKLIST.md` |
+| Feature List (Flutter) | `docs/DANH_SACH_CHUC_NANG_FLUTTER.md` |
+| Product Overview | `docs/GIOI_THIEU_TONG_QUAN.md` |
+| Migration Parity Matrix | `banking_core_java/src/main/resources/migration-parity-matrix.md` |
+| Release Checklist | `banking_core_java/src/main/resources/release-checklist.md` |
+
 ---
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/FeatureName`)
-3. Commit your changes (`git commit -m 'Add FeatureName'`)
-4. Push to the branch (`git push origin feature/FeatureName`)
-5. Open a Pull Request
+1. Fork the repository.
+2. Create a feature branch from `develop`: `git checkout -b feature/your-feature`.
+3. Write tests alongside your code.
+4. Run `./gradlew test` and `flutter test` before committing.
+5. Open a pull request against `develop` with a clear description.
 
-### Code Style
+### Code style
 
-- **Backend**: Follow TypeScript/Node.js best practices
-- **Flutter**: Follow Dart style guide
-- **React**: Follow React best practices and use TypeScript
+- **Java**: 2-space indentation, Lombok for boilerplate, meaningful variable names.
+- **Dart/Flutter**: 2-space indentation, `flutter analyze` clean, prefer `const` constructors.
+- **Commits**: conventional format (`feat:`, `fix:`, `docs:`, `refactor:`).
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Roadmap
-
-- [ ] Multi-currency support
-- [ ] International transfers
-- [ ] Investment products
-- [ ] Loan management
-- [ ] Mobile app iOS release
-- [ ] Advanced analytics dashboard
-- [ ] API rate limiting dashboard
-- [ ] Webhook support
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
